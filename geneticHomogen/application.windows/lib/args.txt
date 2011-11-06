@@ -1,0 +1,3 @@
+ -Xms64m -Xmx1024m
+geneticHomogen
+geneticHomogen.jar,core.jar
