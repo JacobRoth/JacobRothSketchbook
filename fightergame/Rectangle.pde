@@ -118,15 +118,24 @@ class Bullet extends Rectangle {
 class Source { 
   int x;
   int y;
-  
+  float speed;
+
   Source () {
     x = 250;
     y = 250;
+    speed = 5.0;
   }  
   
   Source (int inx, int iny) {
     x = inx;
     y = iny;
+    speed = 5.0;
+  }
+  
+  Source (int inx, int iny, float inspeed) {
+    x = inx;
+    y = iny;
+    speed = inspeed;
   }
   
   void handle(ArrayList holdbullet, int numbullets, int windowSize) {
@@ -146,8 +155,8 @@ class Source {
     */
 
     for (int iii=1; iii<=numbullets; iii++) { 
-      float randX = random(-5, 5);
-      float randY = random(-5, 5);
+      float randX = random(-1*speed, speed);
+      float randY = random(-1*speed, speed);
       
       holdbullet.add(new Bullet(x, y, 10, 10, 255, 0, 0, randX, randY));
     }
