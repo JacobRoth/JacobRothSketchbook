@@ -5,7 +5,7 @@ final boolean invincible = false;
 
 Layer layer1 = new Layer(new Fighter(400, 250, 10, 10, 255, 0, 0, 4));
 
-PFont f;  
+PFont f; //PFONT! 
 
 boolean[] keys = new boolean[526];
 boolean gameRunning = true;
