@@ -3,7 +3,10 @@ final int windowSize = 500;
 final int difficulty = 1;
 final boolean invincible = true;
 
-Layer layer1 = new Layer(3,0,255,0);
+Layer layer1 = new Layer(3,255,0,0);
+Layer layer2 = new Layer(2,0,255,0);
+Layer layer3 = new Layer(1,0,0,255);
+
 
 PFont f; //PFONT! 
 
@@ -45,6 +48,8 @@ void draw() {
 }
 void gameOverCycle() {
   layer1.frozenCycle();
+  layer2.frozenCycle();
+  layer3.frozenCycle();
   fill(255);
   textFont(f,48);
   text("Game over", 100,100);
@@ -52,7 +57,8 @@ void gameOverCycle() {
 
 void pauseCycle() {
   layer1.frozenCycle();
-  
+  layer2.frozenCycle();
+  layer3.frozenCycle();
   fill(255);
   textFont(f,48);
   text("Paused", 100,100);
@@ -63,6 +69,8 @@ void pauseCycle() {
 
 void runningCycle() {
   layer1.activeCycle();
+  layer2.activeCycle();
+  layer3.activeCycle();
   checkForPauseInput();
 }
 

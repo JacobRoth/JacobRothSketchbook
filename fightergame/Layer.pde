@@ -28,7 +28,7 @@ class Layer { //has-a fighter, source, bullet ArrayList
     if (gameRunning) thisFighter.moveSelf();
     thisFighter.boundrycheck(windowSize);
     thisFighter.render();
-    thisSource.handle(layer1.thisBullets,difficulty,500);
+    thisSource.handle(thisBullets,difficulty,500);
   }
   void frozenCycle() {
     for (int iii=0; iii <= (thisBullets.size()-1); iii++) {
