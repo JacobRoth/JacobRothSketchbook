@@ -2,9 +2,17 @@ class Layer { //has-a fighter, source, bullet ArrayList
   Fighter thisFighter;
   Source thisSource;
   ArrayList thisBullets;
-  Layer(Fighter inFighter) {
-    thisFighter = inFighter;
-    thisSource = new Source(windowSize/2,windowSize/2);
+  float speed;
+  int r;
+  int g;
+  int b;
+  Layer(float inspeed, int inr, int ing, int inb) {
+    speed = inspeed;
+    r = inr;
+    g = ing;
+    b = inb;
+    thisFighter = new Fighter(400, 250, 10, 10, r, g, b, speed*1.5);
+    thisSource = new Source(windowSize/2,windowSize/2,speed,r,g,b);
     thisBullets = new ArrayList();
   }
   void activeCycle() {

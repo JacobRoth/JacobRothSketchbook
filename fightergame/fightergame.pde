@@ -1,9 +1,9 @@
 //all globals must be declared out here in globalspace.
 final int windowSize = 500;
 final int difficulty = 1;
-final boolean invincible = false;
+final boolean invincible = true;
 
-Layer layer1 = new Layer(new Fighter(400, 250, 10, 10, 255, 0, 0, 4));
+Layer layer1 = new Layer(3,0,255,0);
 
 PFont f; //PFONT! 
 
