@@ -14,6 +14,8 @@ void setup() {
 }
 
 void draw() {
+  println(millis());
+  /*
   totalheat = 0;
   bufferarray = heatarray;
   for (int iii=0; iii<=(windowSize-1); iii++) {
@@ -33,7 +35,7 @@ void draw() {
     }
   }
   heatarray = bufferarray;
-  println(totalheat/250000);
+  println(totalheat/250000); */
 }
 
 

@@ -3,9 +3,9 @@ final int windowSize = 500;
 final int difficulty = 1;
 final boolean invincible = true;
 
-Layer layer1 = new Layer(3,255,0,0);
-Layer layer2 = new Layer(2,0,255,0);
-Layer layer3 = new Layer(1,0,0,255);
+Layer layer1 = new Layer(6,255,0,0);
+Layer layer2 = new Layer(4,0,255,0);
+Layer layer3 = new Layer(2,0,0,255);
 
 
 PFont f; //PFONT! 
