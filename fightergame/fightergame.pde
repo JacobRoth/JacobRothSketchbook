@@ -1,11 +1,12 @@
 //all globals must be declared out here in globalspace.
 final int windowSize = 500;
 final int difficulty = 1;
-final boolean invincible = true;
+final boolean invincible = false;
+float globalnoise = .001;
 
-Layer layer1 = new Layer(6,255,0,0);
-Layer layer2 = new Layer(4,0,255,0);
-Layer layer3 = new Layer(2,0,0,255);
+Layer layer1 = new Layer(.1,255,0,0,10000);
+Layer layer2 = new Layer(1,0,255,0,1000);
+Layer layer3 = new Layer(10,0,100,255,100);
 
 
 PFont f; //PFONT! 
@@ -29,8 +30,7 @@ boolean checkKey(String k) {
   for(int i = 0; i < keys.length; i++) {
     if(KeyEvent.getKeyText(i).toLowerCase().equals(k.toLowerCase())) {
       return keys[i];
-    }
-  }
+    }}
   return false; 
 }
 void draw() {

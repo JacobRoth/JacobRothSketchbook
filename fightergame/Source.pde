@@ -6,65 +6,29 @@ class Source {
   int r;
   int g;
   int b;
-
-  Source () {
-    x = 250;
-    y = 250;
-    speed = 5.0;
-    r=255;
-    g=0;
-    b=0;
-  }  
+  Trigger timer;
   
-  Source (int inx, int iny) {
-    x = inx;
-    y = iny;
-    speed = 5.0;
-    r=255;
-    g=0;
-    b=0;
-  }
-  
-  Source (int inx, int iny, float inspeed) {
-    x = inx;
-    y = iny;
-    speed = inspeed;
-    r=255;
-    g=0;
-    b=0;
-  }
-  
-  Source (int inx, int iny, float inspeed, int ir, int ig, int ib) {
+  Source (int inx, int iny, float inspeed, int ir, int ig, int ib, int rate) {
     x = inx;
     y = iny;
     speed = inspeed;
     r=ir;
     g=ig;
     b=ib;
+    timer = new Trigger(rate);
   }
   
   
-  void handle(ArrayList holdbullet, int numbullets, int windowSize) {
-    /*
-    if (goingRight) {
-      x += 6;
-    } 
-    else {
-      x -= 6;
-    }
-    if (x<8) {
-      goingRight = true;
-    } 
-    if (x>(windowSize-8)) {
-      goingRight = false;
-    }
-    */
-
-    for (int iii=1; iii<=numbullets; iii++) { 
+  void handle(ArrayList holdbullet, int windowSize) {
+    x = (int)(500*noise(globalnoise));
+    globalnoise += .002;
+    y = (int)(500*noise(globalnoise));
+    globalnoise += .002;
+    while (timer.fires()) {
       float randX = random(-1*speed, speed);
       float randY = random(-1*speed, speed);
       
-      holdbullet.add(new Bullet(x, y, 10, 10, r, g, b, randX, randY));
+      holdbullet.add(new Bullet(x, y, 5, 5, r, g, b, randX, randY));
     }
   }
 }

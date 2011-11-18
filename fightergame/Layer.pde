@@ -6,13 +6,13 @@ class Layer { //has-a fighter, source, bullet ArrayList
   int r;
   int g;
   int b;
-  Layer(float inspeed, int inr, int ing, int inb) {
+  Layer(float inspeed, int inr, int ing, int inb, int rate) {
     speed = inspeed;
     r = inr;
     g = ing;
     b = inb;
-    thisFighter = new Fighter(400, 250, 10, 10, r, g, b, speed*1.5);
-    thisSource = new Source(windowSize/2,windowSize/2,speed,r,g,b);
+    thisFighter = new Fighter((int)random(500), (int)random(500), 10, 10, r, g, b, speed*1.5);
+    thisSource = new Source(windowSize/2,windowSize/2,speed,r,g,b,rate);
     thisBullets = new ArrayList();
   }
   void activeCycle() {
@@ -28,7 +28,7 @@ class Layer { //has-a fighter, source, bullet ArrayList
     if (gameRunning) thisFighter.moveSelf();
     thisFighter.boundrycheck(windowSize);
     thisFighter.render();
-    thisSource.handle(thisBullets,difficulty,500);
+    thisSource.handle(thisBullets,500);
   }
   void frozenCycle() {
     for (int iii=0; iii <= (thisBullets.size()-1); iii++) {
