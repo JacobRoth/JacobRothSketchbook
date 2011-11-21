@@ -2,24 +2,31 @@
 final int windowSize = 500;
 final int difficulty = 1;
 final boolean invincible = false;
-float globalnoise = .001;
 
-Layer layer1 = new Layer(.1,255,0,0,10000);
-Layer layer2 = new Layer(1,0,255,0,1000);
-Layer layer3 = new Layer(10,0,100,255,100);
+Layer layer1;
+Layer layer2;
+Layer layer3;
 
 
-PFont f; //PFONT! 
+PFont f;  
 
 boolean[] keys = new boolean[526];
-boolean gameRunning = true;
+boolean gameRunning = false;
 boolean paused = false;
 
 void setup () {
-  size(500,500);
+  size(windowSize,windowSize);
   frameRate(30);
   f = loadFont("AgencyFB-Reg-48.vlw");
+  setLayers();
 }
+
+void setLayers() {
+   layer1 = new Layer(.1,255,0,0,10000);
+   layer2 = new Layer(1,0,255,0,1000);
+   layer3 = new Layer(10,0,100,255,100);
+}
+
 void keyPressed() { 
   keys[keyCode] = true;
 }
@@ -43,16 +50,28 @@ void draw() {
       runningCycle();
     }
   } else {
-    gameOverCycle();
+    offCycle();
   }
 }
-void gameOverCycle() {
+void offCycle() {
   layer1.frozenCycle();
   layer2.frozenCycle();
   layer3.frozenCycle();
   fill(255);
   textFont(f,48);
-  text("Game over", 100,100);
+  text("f", 50,100);
+  textFont(f,120);
+  text("A", 150,100);
+  textFont(f,48);
+  text("d", 250,100);
+  text("e", 350,100);
+  text("By Jacob Roth", 100, 300);
+  textFont(f,36);
+  text("Press B to start", 200,350);
+  if (checkKey("b")) {
+    setLayers();
+    gameRunning=true;
+  }
 }
 
 void pauseCycle() {
@@ -68,6 +87,7 @@ void pauseCycle() {
 }
 
 void runningCycle() {
+  println(millis());
   layer1.activeCycle();
   layer2.activeCycle();
   layer3.activeCycle();
@@ -83,21 +103,6 @@ void checkForPauseInput() {
   }
 }
 
-boolean collDetect(Rectangle rect1, Rectangle rect2) {
-  if (rect1.x+rect1.w < rect2.x) { 
-    return false;
-  }
-  if (rect1.x > rect2.x+rect2.w) { 
-    return false;
-  }
-  if (rect1.y+rect1.h < rect2.y) { 
-    return false;
-  }
-  if (rect1.y > rect2.y+rect2.h) { 
-    return false;
-  }
-  return true;
-}
 
 
   

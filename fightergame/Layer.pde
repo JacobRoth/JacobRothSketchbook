@@ -11,7 +11,7 @@ class Layer { //has-a fighter, source, bullet ArrayList
     r = inr;
     g = ing;
     b = inb;
-    thisFighter = new Fighter((int)random(500), (int)random(500), 10, 10, r, g, b, speed*1.5);
+    thisFighter = new Fighter((int)random(windowSize), (int)random(windowSize), 10, 10, r, g, b, speed*1.5);
     thisSource = new Source(windowSize/2,windowSize/2,speed,r,g,b,rate);
     thisBullets = new ArrayList();
   }

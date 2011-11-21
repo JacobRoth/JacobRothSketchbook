@@ -115,35 +115,20 @@ class Bullet extends Rectangle {
   }
 }
 
-class Source { 
-  int x;
-  int y;
-  boolean goingRight;
-  Source (int inx, int iny) {
-    x = inx;
-    y = iny;
-    goingRight=true;
+boolean collDetect(Rectangle rect1, Rectangle rect2) {
+  if (rect1.x+rect1.w < rect2.x) { 
+    return false;
   }
-  void handle(ArrayList holdbullet, int numbullets, int windowSize) {
-    if (goingRight) {
-      x += 6;
-    } 
-    else {
-      x -= 6;
-    }
-    if (x<8) {
-      goingRight = true;
-    } 
-    if (x>(windowSize-8)) {
-      goingRight = false;
-    }
-
-    for (int iii=1; iii<=numbullets; iii++) { 
-      float randX = random(-6, 5);
-      float randY = random(1, 5);
-      
-      holdbullet.add(new Bullet(x, y, 10, 10, 255, 0, 0, randX, randY));
-    }
+  if (rect1.x > rect2.x+rect2.w) { 
+    return false;
   }
+  if (rect1.y+rect1.h < rect2.y) { 
+    return false;
+  }
+  if (rect1.y > rect2.y+rect2.h) { 
+    return false;
+  }
+  return true;
 }
+
 
