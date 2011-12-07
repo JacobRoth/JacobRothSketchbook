@@ -2,12 +2,13 @@
 final int windowSize = 500;
 final int difficulty = 1;
 final boolean invincible = false;
-float globalnoise = .001;
 
-Layer layer1 = new Layer(.1,255,0,0,10000);
-Layer layer2 = new Layer(1,0,255,0,1000);
-Layer layer3 = new Layer(10,0,100,255,100);
+int secsrunning = 0;
+Trigger secsCounter;
 
+Layer layer1;
+Layer layer2;
+Layer layer3;
 
 PFont f;  
 
@@ -16,10 +17,20 @@ boolean gameRunning = false;
 boolean paused = false;
 
 void setup () {
-  size(windowSize,windowSize);
+  size(windowSize, windowSize);
   frameRate(30);
   f = loadFont("AgencyFB-Reg-48.vlw");
+  setLayers();
 }
+
+void setLayers() {
+  layer1 = new Layer(2.5, 255, 0, 0, 400);
+  layer2 = new Layer(5, 0, 255, 0, 1000);
+  layer3 = new Layer(10, 0, 100, 255, 100);
+  secsrunning = 0;
+  secsCounter = new Trigger(1000);
+}
+
 void keyPressed() { 
   keys[keyCode] = true;
 }
@@ -27,22 +38,25 @@ void keyReleased() {
   keys[keyCode] = false;
 }
 boolean checkKey(String k) {
-  for(int i = 0; i < keys.length; i++) {
-    if(KeyEvent.getKeyText(i).toLowerCase().equals(k.toLowerCase())) {
+  for (int i = 0; i < keys.length; i++) {
+    if (KeyEvent.getKeyText(i).toLowerCase().equals(k.toLowerCase())) {
       return keys[i];
-    }}
-  return false; 
+    }
+  }
+  return false;
 }
 void draw() {
   background(0);
-    
-  if(gameRunning) {
+
+  if (gameRunning) {
     if (paused) {
       pauseCycle();
-    } else {
+    } 
+    else {
       runningCycle();
     }
-  } else {
+  } 
+  else {
     offCycle();
   }
 }
@@ -51,12 +65,21 @@ void offCycle() {
   layer2.frozenCycle();
   layer3.frozenCycle();
   fill(255);
-  textFont(f,120);
-  text("f", 50,100);
-  text("A", 150,100);
-  text("d", 250,100);
-  text("e", 350,100);
-  textFont(f,48);
+  textFont(f, 48);
+  text("f", 50, 100);
+  textFont(f, 120);
+  text("A", 150, 100);
+  textFont(f, 48);
+  text("d", 250, 100);
+  text("e", 350, 100);
+  text("By Jacob Roth", 100, 300);
+  textFont(f, 36);
+  text("Press B to start", 200, 350);
+  if (checkKey("b")) {
+    setLayers();
+    gameRunning=true;
+  }
+  text(secsrunning, 400, 490);
 }
 
 void pauseCycle() {
@@ -64,19 +87,26 @@ void pauseCycle() {
   layer2.frozenCycle();
   layer3.frozenCycle();
   fill(255);
-  textFont(f,48);
-  text("Paused", 100,100);
-  textFont(f,26);
-  text("Press U to unpause", 300,400);
+  textFont(f, 48);
+  text("Paused", 100, 100);
+  textFont(f, 26);
+  text("Press U to unpause", 300, 400);
   checkForPauseInput();
+  text(secsrunning, 400, 490);
 }
 
 void runningCycle() {
-  println(millis());
+  if (secsCounter.fires()) {
+    secsrunning++;
+  }
+
   layer1.activeCycle();
   layer2.activeCycle();
   layer3.activeCycle();
-  checkForPauseInput();
+  //checkForPauseInput();
+  textFont(f, 26);
+  fill(255);
+  text(secsrunning, 400, 490);
 }
 
 void checkForPauseInput() {
@@ -90,4 +120,4 @@ void checkForPauseInput() {
 
 
 
-  
+
