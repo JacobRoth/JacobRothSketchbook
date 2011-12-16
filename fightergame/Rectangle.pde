@@ -44,7 +44,6 @@ class Rectangle {
 
 class Fighter extends Rectangle {
   float topspeed;
-
   Fighter (int c1x, int c1y, int inw, int inh, int inr, int ing, int inb, float topspd) {
     super(c1x, c1y, inw, inh, inr, ing, inb);
     topspeed = topspd;
