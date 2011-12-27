@@ -4,7 +4,7 @@
     <!-- charset must remain utf-8 to be handled properly by Processing -->
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-    <title>nodes : Built with Processing</title>
+    <title>rectdev : Built with Processing</title>
 
     <style type="text/css">
       /* <![CDATA[ */
@@ -31,7 +31,7 @@
 
   <body>
     <div id="content">
-      <div id="nodes_container">
+      <div id="rectdev_container">
 
 	<!-- This version plays nicer with older browsers, 
 	     but requires JavaScript to be enabled. 
@@ -43,10 +43,10 @@
 	  /* <![CDATA[ */
 
 	  var attributes = { 
-            code: 'nodes.class',
-            archive: 'nodes.jar',
-            width: 100, 
-            height: 100,
+            code: 'rectdev.class',
+            archive: 'rectdev.jar',
+            width: 400, 
+            height: 400,
           };
           var parameters = { 
             image: 'loading.gif',
@@ -60,13 +60,13 @@
         
 	<noscript> <div>
 	  <!--[if !IE]> -->
-	  <object classid="java:nodes.class" 
+	  <object classid="java:rectdev.class" 
             	  type="application/x-java-applet"
-            	  archive="nodes.jar"
-            	  width="100" height="100"
+            	  archive="rectdev.jar"
+            	  width="400" height="400"
             	  standby="Loading Processing software..." >
             
-	    <param name="archive" value="nodes.jar" />
+	    <param name="archive" value="rectdev.jar" />
 	    
 	    <param name="mayscript" value="true" />
 	    <param name="scriptable" value="true" />
@@ -82,11 +82,11 @@
 		 http://java.sun.com/javase/6/webnotes/install/jre/autodownload.html -->
 	    <object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
 		    codebase="http://java.sun.com/update/1.6.0/jinstall-6u20-windows-i586.cab"
-		    width="100" height="100"
+		    width="400" height="400"
 		    standby="Loading Processing software..."  >
 	      
-	      <param name="code" value="nodes" />
-	      <param name="archive" value="nodes.jar" />
+	      <param name="code" value="rectdev" />
+	      <param name="archive" value="rectdev.jar" />
 	      
 	      <param name="mayscript" value="true" />
 	      <param name="scriptable" value="true" />
@@ -117,10 +117,44 @@
       
       <p>
 	
+ additional boolean parameter to indicate whether the trigger 
+ should fire immediately
+/
+  public Trigger( int rate, boolean immediately) {
+    setRate( rate ); 
+    if ( immediately ) start -= rate;
+  }
+
+  /** 
+ changes the rate at which the trigger fires in milliseconds 
+/
+  public void setRate( int rate ) {
+    this.rate = rate;
+  }
+  public int getRate() {
+    return rate;
+  }
+  /**
+ returns true if the trigger has fired, false otherwise
+/
+  public boolean fires() {
+    if ( millis() - start >= rate ) {
+      start += rate; 
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  /**
+ resets the timer, 
+ next trigger will occur in _rate_ milliseconds.  
+   
+
       </p>
       
       <p>
-	Source code: <a href="nodes.pde">nodes</a> 
+	Source code: <a href="rectdev.pde">rectdev</a> 
       </p>
       
       <p>

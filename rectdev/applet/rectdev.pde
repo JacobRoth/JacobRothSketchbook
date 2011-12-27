@@ -1,5 +1,27 @@
-MotileRect mov = new MotileRect(new PVector(40, 94), 5, 5, 0, 0, 255, new PVector(0, 0));
+MotileRect mov = new MotileRect(new PVector(40, 404), 5, 5, 0, 0, 255, new PVector(0, 0));
 
+
+void setup() {
+  size(400, 400);
+}
+void draw() {
+  background(150);
+
+  mov.update();
+  mov.render();
+  if (checkKey("W")) {
+    mov.speed = new PVector(0,-10);
+  }
+  if (checkKey("S")) {
+    mov.speed = new PVector(0,10);
+  }
+  if (checkKey("A")) {
+    mov.speed = new PVector(-10,0);
+  }
+  if (checkKey("D")) {
+    mov.speed = new PVector(10,0);
+  }
+}
 boolean[] keys = new boolean[526];
 boolean checkKey(String k) {
   for (int i = 0; i < keys.length; i++) {
@@ -9,38 +31,7 @@ boolean checkKey(String k) {
   }
   return false;
 }
-void keyPressed()
-{ 
-  keys[keyCode] = true;
-}
- 
-void keyReleased()
-{ 
-  keys[keyCode] = false; 
-}
-void setup() {
-  size(1300, 600);
-}
-void draw() {
-  background(150);
-  mov.update();
-  mov.render();
-  if (checkKey("W")) {
-    mov.speed.y -= .1;
-  }
-  if (checkKey("S")) {
-    mov.speed.y += .1;
-  }
-  if (checkKey("A")) {
-    mov.speed.x -= .1;
-  }
-  if (checkKey("D")) {
-    mov.speed.x += .1;
-  }
-  if (checkKey("T")) {
-    mov.pos = new PVector(50,50);
-  }
-}
+
 
 class Rectangle {
   PVector pos;
@@ -84,7 +75,7 @@ class MotileRect extends Rectangle {
   MotileRect(PVector inpos, int inw, int inh, int inr, int ing, int inb, PVector inspd) {
     super(inpos, inw, inh, inr, ing, inb);
     speed = inspd;
-    timer = new Trigger(10);
+    timer = new Trigger(100);
   }
   void update() {
     while (timer.fires ()) {
@@ -92,6 +83,7 @@ class MotileRect extends Rectangle {
     }
   }
 }
+
 
 // The trigger class, by kritzikratzi
 class Trigger {
@@ -139,3 +131,4 @@ class Trigger {
     start = millis();
   }
 }
+
