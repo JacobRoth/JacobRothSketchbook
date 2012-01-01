@@ -1,8 +1,8 @@
-void mouseClicked() {
+/*void mouseClicked() {
   player.pos.x = mouseX;
   player.pos.y = mouseY;
   player.speed = new PVector(0,0); //reset it
-}
+}*/
 
 
 
@@ -24,6 +24,23 @@ void keyPressed()
 void keyReleased()
 { 
   keys[keyCode] = false;
+}
+
+void placeGoldRect() {
+  int randX = (int)(random(windowX-goldRectSize));
+  int randY = (int)(random(windowY-goldRectSize));
+  goldrect.pos = new PVector(randX,randY);
+}
+
+void fireMeteor() { //from the edge of the screen.
+  int screenedge = (int)(random(0,4));
+  if (screenedge == 0) { //the left edge
+    int posx = 1;
+    int posy = (int)(random(0,windowY-meteorSize));
+    float speedx = random(0,meteorTopSpeed);
+    float speedy = random(-1*meteorTopSpeed,meteorTopSpeed);
+    meteors.add(new MotileRect(new PVector(posx,posy),meteorSize,meteorSize,0,140,50,new PVector(speedx,speedy)));
+  }
 }
 
 class Trigger { //by kritzikratzi

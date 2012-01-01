@@ -1,3 +1,4 @@
+
 class Rectangle {
   PVector pos;
 
@@ -46,24 +47,26 @@ class MotileRect extends Rectangle {
 }
 
 class PlayerRect extends MotileRect {
+  int score;
   PlayerRect(PVector inpos, int inw, int inh, int inr, int ing, int inb) {
     super(inpos, inw, inh, inr, ing, inb, new PVector(0,0)); //start out speedless
+    score = 0;
   }
   void moveself() {
     if (checkKey("Up")) {
-      speed.y -= .1;
+      speed.y -= .02;
     }
     if (checkKey("Down")) {
-      speed.y += .1;
+      speed.y += .02;
     }
     if (checkKey("Left")) {
-      speed.x -= .1;
+      speed.x -= .02;
     }
     if (checkKey("Right")) {
-      speed.x += .1;
+      speed.x += .02;
     }
-    println(" player coordinates x=" + pos.x + ", y=" + pos.y);
   }
+  
 }
 
 class GravRect extends Rectangle {
@@ -85,46 +88,32 @@ class GravRect extends Rectangle {
   }
   */
   void affect(MotileRect target) {
-    if (rectCollision(this,target)) {
-      target.speed = new PVector(0,0);
-    } else {
-      // the distance on the x-axis
-      float dx = getCX() - target.pos.x;
+    // the distance on the x-axis
+    float dx = getCX() - target.pos.x;
     
-      // the distance on the y-axis
-      float dy = getCY() - target.pos.y;
+    // the distance on the y-axis
+    float dy = getCY() - target.pos.y;
     
-      // the distance between the 2 objects 
-      float d = sqrt( dx * dx + dy * dy );
+    // the distance between the 2 objects 
+    float d = sqrt( dx * dx + dy * dy );
     
-      // the acceleration - inversely proportional to the square of the distance
-      float acc = magnitude / ( d * d);
+    // the acceleration - inversely proportional to the square of the distance
+    float acc = magnitude / ( d * d);
+    // the direction angle
+    float sinAngle = dy / d;
+    float cosAngle = dx / d;
     
-      // the direction angle
-      float sinAngle = dy / d;
-      float cosAngle = dx / d;
-      /*print("Sine Angle = ");
-      print(sinAngle);
-      print(" , ");
     
-      print("Cosine Angle = ");
-      print(cosAngle);
-      println("");
-      */
+    // the acceleration on the x-axis
+    float accX = acc * cosAngle;
     
-      // the acceleration on the x-axis
-      float accX = acc * cosAngle;
+    // the acceleration on the y-axis
+    float accY = acc * sinAngle;
     
-      // the acceleration on the y-axis
-      float accY = acc * sinAngle;
-    
-      PVector effect = new PVector( accX, accY);
-      target.speed.add(effect);
-    }
+    PVector effect = new PVector( accX, accY);
+    target.speed.add(effect);
   } 
 }
-
-    
 
 boolean rectCollision(Rectangle rect1, Rectangle rect2) {
   if (rect1.pos.x+rect1.w < rect2.pos.x) { 
