@@ -9,18 +9,28 @@ class Rectangle {
   int g;
   int b;
 
-  Rectangle (PVector inpos, int inw, int inh, int inr, int ing, int inb) { //define with a vector
+  boolean hollow;
+
+  Rectangle (PVector inpos, int inw, int inh, int inr, int ing, int inb, boolean inhollow) { //non-hollow
     pos = inpos;
     h = inh;
     w = inw;
     r = inr;
     g = ing;
     b = inb;
+    hollow = inhollow;
   }
-
+  Rectangle (PVector inpos, int inw, int inh, int inr, int ing, int inb) {
+    this(inpos,inw,inh,inr,ing,inb,false);
+  } 
   void render () {
-    fill(r, g, b);
-    noStroke();
+    if(hollow) {
+      stroke(r,g,b);
+      noFill();
+    } else {
+      fill(r, g, b);
+      noStroke();
+    }
     rect(pos.x, pos.y, w, h);
   }
   float getCX() { //get center-x
@@ -54,16 +64,16 @@ class PlayerRect extends MotileRect {
   }
   void moveself() {
     if (checkKey("Up")) {
-      speed.y -= .02;
+      speed.y -= .03;
     }
     if (checkKey("Down")) {
-      speed.y += .02;
+      speed.y += .03;
     }
     if (checkKey("Left")) {
-      speed.x -= .02;
+      speed.x -= .03;
     }
     if (checkKey("Right")) {
-      speed.x += .02;
+      speed.x += .03;
     }
   }
   

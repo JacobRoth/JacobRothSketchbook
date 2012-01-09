@@ -1,7 +1,5 @@
 /*void mouseClicked() {
-  player.pos.x = mouseX;
-  player.pos.y = mouseY;
-  player.speed = new PVector(0,0); //reset it
+  fireMeteor();
 }*/
 
 
@@ -34,13 +32,32 @@ void placeGoldRect() {
 
 void fireMeteor() { //from the edge of the screen.
   int screenedge = (int)(random(0,4));
+  println(screenedge);
   if (screenedge == 0) { //the left edge
     int posx = 1;
     int posy = (int)(random(0,windowY-meteorSize));
     float speedx = random(0,meteorTopSpeed);
     float speedy = random(-1*meteorTopSpeed,meteorTopSpeed);
     meteors.add(new MotileRect(new PVector(posx,posy),meteorSize,meteorSize,0,140,50,new PVector(speedx,speedy)));
-  }
+  } else if (screenedge == 1) { //the right edge
+    int posx = windowX-meteorSize;
+    int posy = (int)(random(0,windowY-meteorSize));
+    float speedx = random(0,-1*meteorTopSpeed);
+    float speedy = random(-1*meteorTopSpeed,meteorTopSpeed);
+    meteors.add(new MotileRect(new PVector(posx,posy),meteorSize,meteorSize,0,140,50,new PVector(speedx,speedy)));
+  } else if (screenedge == 2) { //the top
+    int posx = (int)(random(0,windowX-meteorSize));
+    int posy = 0;
+    float speedx = random(-1*meteorTopSpeed, meteorTopSpeed);
+    float speedy = random(0,meteorTopSpeed);
+    meteors.add(new MotileRect(new PVector(posx,posy),meteorSize,meteorSize,0,140,50,new PVector(speedx,speedy)));
+  } else if (screenedge == 3) { //the bottom
+    int posx = (int)(random(0,windowX-meteorSize));
+    int posy = windowY-meteorSize;
+    float speedx = random(-1*meteorTopSpeed, meteorTopSpeed);
+    float speedy = random(0,-1*meteorTopSpeed);
+    meteors.add(new MotileRect(new PVector(posx,posy),meteorSize,meteorSize,0,140,50,new PVector(speedx,speedy)));
+  }    
 }
 
 class Trigger { //by kritzikratzi

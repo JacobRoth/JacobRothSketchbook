@@ -1,18 +1,18 @@
 /* GPL licenced */
 //[CONFIG]
-final int gravMag = 1600;
+final int gravMag = 1500;
 final int windowX = 1024;
 final int windowY = 768;
-final int goldRectSize = 20;
-final int meteorSize = 30;
-final float meteorTopSpeed = 0.5;
+final int goldRectSize = 100;
+final int meteorSize = 15;
+final float meteorTopSpeed = 0.8;
 //[/CONFIG]
 
 PlayerRect player;
 GravRect sun;
 
 ArrayList meteors;
-Rectangle goldrect = new Rectangle(new PVector(20,20),goldRectSize,goldRectSize,255,255,0);
+Rectangle goldrect = new Rectangle(new PVector(20,20),goldRectSize,goldRectSize,255,255,0,true);
 
 
 PFont f;
@@ -27,7 +27,7 @@ void setup() {
 
 void set_up_game() {
   sun = new GravRect(new PVector(windowX/2,windowY/2),35,35,255,0,0,gravMag);
-  player = new PlayerRect(new PVector(40, 94), 3, 3, 0, 0, 255);
+  player = new PlayerRect(new PVector(40, 94), 3, 3, 255, 255, 255);
   player.score = 0;
   placeGoldRect();
   meteors = new ArrayList();
@@ -53,15 +53,14 @@ void activeCycle() {
     if(thismeteor.pos.y < 0 || thismeteor.pos.y+thismeteor.h > windowY )  meteors.remove(thismeteor);
     if(rectCollision(sun,thismeteor))                                     meteors.remove(thismeteor);
     
-    if(rectCollision(player,thismeteor)) gamerunning=false;
-    
+    if(rectCollision(player,thismeteor)) gamerunning=false; 
   }
   
   
   if(player.pos.x < 0 || player.pos.x+player.w > windowX ) /*player.speed.x = player.speed.x*-1;*/ gamerunning=false;
   if(player.pos.y < 0 || player.pos.y+player.h > windowY ) /*player.speed.y = player.speed.y*-1;*/ gamerunning=false;
   if(rectCollision(player,goldrect)) {
-    player.score++;
+    player.score+= (1+meteors.size()); //award a bonus for any meteors on screen
     placeGoldRect();
     for(int iii=0; iii<=player.score;iii++) {
       fireMeteor();
@@ -75,16 +74,18 @@ void activeCycle() {
 
 void titleScreen() {
   textFont(f,48);
-  text("Frictionleß",0,40);
+  text("syßtem",0,40);
   text("Press ENTER to start", 200,200);
   if(checkKey("Enter")) {
     set_up_game();
     gamerunning = true;
   }
+  String scorestr = "Score: " + player.score;
+  text(scorestr,0,720);
 }
 
 
 void draw() {
-  background(150);
+  background(0);
   if(gamerunning)  { activeCycle(); } else { titleScreen(); } //one-line if-else with brackets - like a boss.
 }
