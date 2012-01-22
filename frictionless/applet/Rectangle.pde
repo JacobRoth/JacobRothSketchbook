@@ -24,39 +24,14 @@ class Rectangle {
     this(inpos,inw,inh,inr,ing,inb,false);
   } 
   void render () {
-    stroke(r,g,b);
     if(hollow) {
+      stroke(r,g,b);
       noFill();
     } else {
       fill(r, g, b);
-      for (int iii=0; iii<coronaStormIntensity; iii++) {
-        PVector cr1 = getCoronaPoint();
-        PVector cr2 = getCoronaPoint();
-        line(cr1.x,cr1.y,cr2.x,cr2.y);
-      }
+      noStroke();
     }
     rect(pos.x, pos.y, w, h);
-    
-    stroke(r,g,b);
-    
-    
-  }
-  PVector getCoronaPoint() { //corona extends 1/2 the width out the sides of the rect and 1/2 the height out the top and bottom
-  /* finds a point in the corona */
-    int thisX = 0;
-    int thisY = 0;
-    if(random(1)>0.5) { //x on the left
-      thisX = (int)(random(pos.x-(w/2),pos.x));
-    } else {
-      thisX = (int)(random(pos.x+w,pos.x+(w*1.5)));
-    }
-    /*if(random(1)>0.5) {
-      thisY = (int)(random(pos.y-(h/2),pos.y));
-    } else {
-      thisY = (int)(random(pos.y+h,pos.y+(h*1.5)));
-    }*/
-    thisY = (int)(random(pos.y-(h/2),pos.y+h+(h/2)));
-    return new PVector(thisX,thisY);
   }
   float getCX() { //get center-x
     return pos.x+(w/2);
@@ -88,17 +63,17 @@ class PlayerRect extends MotileRect {
     score = 0;
   }
   void moveself() {
-    if (checkKey("Up") || checkKey("W")) {
-      speed.y -= .05;
+    if (checkKey("Up")) {
+      speed.y -= .02;
     }
-    if (checkKey("Down")|| checkKey("S")) {
-      speed.y += .05;
+    if (checkKey("Down")) {
+      speed.y += .02;
     }
-    if (checkKey("Left")|| checkKey("A")) {
-      speed.x -= .05;
+    if (checkKey("Left")) {
+      speed.x -= .02;
     }
-    if (checkKey("Right")|| checkKey("D")) {
-      speed.x += .05;
+    if (checkKey("Right")) {
+      speed.x += .02;
     }
   }
   
@@ -111,7 +86,17 @@ class GravRect extends Rectangle {
     magnitude = inmag;
   }
   
-
+  /*
+  void affect(MotileRect target) {
+    PVector effect = new PVector( magnitude/(pos.x-target.pos.x), magnitude/(pos.y-target.pos.y));
+    print(effect.x);
+    print(" , ");
+    println(effect.y);
+    //effect.normalize();
+    //effect.mult(magnitude);
+    target.speed.add(effect);
+  }
+  */
   void affect(MotileRect target) {
     // the distance on the x-axis
     float dx = getCX() - target.pos.x;

@@ -1,13 +1,11 @@
 /* GPL licenced */
 //[CONFIG]
-final int gravMag = 1500;
+final int gravMag = 1600;
 final int windowX = 1024;
 final int windowY = 768;
-final int goldRectSize = 100;
-final int meteorSize = 15;
-final float meteorTopSpeed = 0.8;
-final int coronaStormIntensity = 10;
-final int backgroundBrightness = 100; //from 0 to 255
+final int goldRectSize = 70;
+final int meteorSize = 30;
+final float meteorTopSpeed = 0.5;
 //[/CONFIG]
 
 PlayerRect player;
@@ -16,14 +14,13 @@ GravRect sun;
 ArrayList meteors;
 Rectangle goldrect = new Rectangle(new PVector(20,20),goldRectSize,goldRectSize,255,255,0,true);
 
+
 PFont f;
 boolean gamerunning = false;
 
-float backgroundNoise=0;
-
 void setup() { 
   size(1024,768);
-  frameRate(30);
+  frameRate(120);
   set_up_game();
   f = loadFont("TlwgTypist-48.vlw");
 }
@@ -41,6 +38,8 @@ void activeCycle() {
   player.render();
   player.moveself();
   goldrect.render();
+  
+  
   sun.render();
   sun.affect(player);
   if(rectCollision(sun,player)) gamerunning=false;
@@ -61,7 +60,7 @@ void activeCycle() {
   if(player.pos.x < 0 || player.pos.x+player.w > windowX ) /*player.speed.x = player.speed.x*-1;*/ gamerunning=false;
   if(player.pos.y < 0 || player.pos.y+player.h > windowY ) /*player.speed.y = player.speed.y*-1;*/ gamerunning=false;
   if(rectCollision(player,goldrect)) {
-    player.score+= (1+meteors.size()); //award a bonus for any meteors on screen
+    player.score++;
     placeGoldRect();
     for(int iii=0; iii<=player.score;iii++) {
       fireMeteor();
@@ -76,8 +75,8 @@ void activeCycle() {
 void titleScreen() {
   textFont(f,48);
   text("syßtem",0,40);
-  text("Press K to start", 200,200);
-  if(checkKey("K")) {
+  text("Press ENTER to start", 200,200);
+  if(checkKey("Enter")) {
     set_up_game();
     gamerunning = true;
   }
@@ -87,8 +86,6 @@ void titleScreen() {
 
 
 void draw() {
-  background(noise(backgroundNoise)*backgroundBrightness);
-  backgroundNoise += 0.01;
-  println(backgroundNoise);
+  background(0);
   if(gamerunning)  { activeCycle(); } else { titleScreen(); } //one-line if-else with brackets - like a boss.
 }
