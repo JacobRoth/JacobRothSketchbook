@@ -5,9 +5,10 @@ final int windowX = 1024;
 final int windowY = 768;
 final int goldRectSize = 100;
 final int meteorSize = 15;
-final float meteorTopSpeed = 0.8;
-final int coronaStormIntensity = 10;
+final float meteorTopSpeed = 1;
+final int coronaStormIntensity = 1;
 final int backgroundBrightness = 100; //from 0 to 255
+final boolean useDynamicBackground = false;
 //[/CONFIG]
 
 PlayerRect player;
@@ -87,8 +88,11 @@ void titleScreen() {
 
 
 void draw() {
-  background(noise(backgroundNoise)*backgroundBrightness);
-  backgroundNoise += 0.01;
-  println(backgroundNoise);
+  if(useDynamicBackground) {
+    background(noise(backgroundNoise)*backgroundBrightness);
+    backgroundNoise += 0.01;
+  } else {
+    background(0);
+  }
   if(gamerunning)  { activeCycle(); } else { titleScreen(); } //one-line if-else with brackets - like a boss.
 }
