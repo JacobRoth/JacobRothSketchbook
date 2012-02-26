@@ -72,7 +72,7 @@ void offCycle() {
   textFont(f, 48);
   text("d", 250, 100);
   text("e", 350, 100);
-  text("By Jacob Roth", 100, 300);
+  text("By Yanom", 100, 300);
   textFont(f, 36);
   text("Press B to start", 200, 350);
   if (checkKey("b")) {

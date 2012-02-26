@@ -1,11 +1,14 @@
 /* GPL licenced */
 //[CONFIG]
-final int gravMag = 1600;
+final int gravMag = 1000;
 final int windowX = 1024;
 final int windowY = 768;
-final int goldRectSize = 70;
-final int meteorSize = 30;
-final float meteorTopSpeed = 0.5;
+final int goldRectSize = 100;
+final int meteorSize = 15;
+final float meteorTopSpeed = 1;
+final int coronaStormIntensity = 1;
+final int backgroundBrightness = 100; //from 0 to 255
+final boolean useDynamicBackground = false;
 //[/CONFIG]
 
 PlayerRect player;
@@ -14,13 +17,14 @@ GravRect sun;
 ArrayList meteors;
 Rectangle goldrect = new Rectangle(new PVector(20,20),goldRectSize,goldRectSize,255,255,0,true);
 
-
 PFont f;
 boolean gamerunning = false;
 
+float backgroundNoise=0;
+
 void setup() { 
   size(1024,768);
-  frameRate(120);
+  frameRate(30);
   set_up_game();
   f = loadFont("TlwgTypist-48.vlw");
 }
@@ -38,8 +42,6 @@ void activeCycle() {
   player.render();
   player.moveself();
   goldrect.render();
-  
-  
   sun.render();
   sun.affect(player);
   if(rectCollision(sun,player)) gamerunning=false;
@@ -60,7 +62,7 @@ void activeCycle() {
   if(player.pos.x < 0 || player.pos.x+player.w > windowX ) /*player.speed.x = player.speed.x*-1;*/ gamerunning=false;
   if(player.pos.y < 0 || player.pos.y+player.h > windowY ) /*player.speed.y = player.speed.y*-1;*/ gamerunning=false;
   if(rectCollision(player,goldrect)) {
-    player.score++;
+    player.score+= (1+meteors.size()); //award a bonus for any meteors on screen
     placeGoldRect();
     for(int iii=0; iii<=player.score;iii++) {
       fireMeteor();
@@ -69,14 +71,14 @@ void activeCycle() {
   textFont(f,30);
   fill(255);
   String scorestr = "Score: " + player.score;
-  text(scorestr,0,750);
+  text(scorestr,0,650);
 }
 
 void titleScreen() {
   textFont(f,48);
   text("syßtem",0,40);
-  text("Press ENTER to start", 200,200);
-  if(checkKey("Enter")) {
+  text("Press K to start", 200,200);
+  if(checkKey("K")) {
     set_up_game();
     gamerunning = true;
   }
@@ -86,6 +88,11 @@ void titleScreen() {
 
 
 void draw() {
-  background(0);
-  if(gamerunning)  { activeCycle(); } else { titleScreen(); } //one-line if-else with brackets - like a boss.
+  if(useDynamicBackground) {
+    background(noise(backgroundNoise)*backgroundBrightness);
+    backgroundNoise += 0.01;
+  } else {
+    background(0);
+  }
+  if(gamerunning)  { activeCycle(); } else { titleScreen(); }
 }
