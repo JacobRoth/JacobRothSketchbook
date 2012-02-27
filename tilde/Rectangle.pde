@@ -29,11 +29,6 @@ class Rectangle {
       noFill();
     } else {
       fill(r, g, b);
-      for (int iii=0; iii<coronaStormIntensity; iii++) {
-        PVector cr1 = getCoronaPoint();
-        PVector cr2 = getCoronaPoint();
-        line(cr1.x,cr1.y,cr2.x,cr2.y);
-      }
     }
     rect(pos.x, pos.y, w, h);
     
@@ -68,41 +63,28 @@ class Rectangle {
 
 class MotileRect extends Rectangle {
   PVector speed; //in pixels per 1/10th second.
-  Trigger timer; 
   MotileRect(PVector inpos, int inw, int inh, int inr, int ing, int inb, PVector inspd) {
     super(inpos, inw, inh, inr, ing, inb);
     speed = inspd;
-    timer = new Trigger(10);
   }
   void update() {
-    while (timer.fires ()) {
-      pos.add(speed);
+    pos.add(speed);
+  }
+  boolean isOffSides(int windowX, int windowY) {
+    if(pos.x < 0)  {
+      return true;
+    } else if(pos.y < 0) { 
+      return true;
+    } else if(pos.x+w > windowX) {
+      return true;
+    } else if(pos.y+h > windowY) {
+      return true;
     }
+    return false;
   }
 }
 
-class PlayerRect extends MotileRect {
-  int score;
-  PlayerRect(PVector inpos, int inw, int inh, int inr, int ing, int inb) {
-    super(inpos, inw, inh, inr, ing, inb, new PVector(0,0)); //start out speedless
-    score = 0;
-  }
-  void moveself() {
-    if (checkKey("Up") || checkKey("W")) {
-      speed.y -= .05;
-    }
-    if (checkKey("Down")|| checkKey("S")) {
-      speed.y += .05;
-    }
-    if (checkKey("Left")|| checkKey("A")) {
-      speed.x -= .05;
-    }
-    if (checkKey("Right")|| checkKey("D")) {
-      speed.x += .05;
-    }
-  }
-  
-}
+
 
 class GravRect extends Rectangle {
   float magnitude;
