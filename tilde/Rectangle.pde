@@ -1,6 +1,6 @@
 
 class Rectangle {
-  PVector pos;
+  protected PVector pos;
 
   int h;
   int w;
@@ -81,6 +81,9 @@ class MotileRect extends Rectangle {
       return true;
     }
     return false;
+  }
+  boolean isOffSides() {
+    return isOffSides(windowSize,windowSize);
   }
 }
 

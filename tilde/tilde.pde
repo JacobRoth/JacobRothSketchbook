@@ -28,13 +28,18 @@ void keyReleased()
 { 
   keys[keyCode] = false;
 }
+void mousePressed() {
+  player.somewep.fire(player.pos,mouseX,mouseY,playersBullets);
+}
 
 void setup() { 
   size(windowSize,windowSize);
   frameRate(40);
   f = loadFont("Braggadocio-48.vlw");
-  player = new PlayerRect(new PVector(300,300),20,20,255,0,0);
+  player = new PlayerRect(new PVector(300,300),24,24,255,0,0);
   enemies = new ArrayList();
+  playersBullets = new ArrayList();
+  
 }
 void draw() {
   boolean gameOver = false;
@@ -46,11 +51,20 @@ void draw() {
     thisEnemy.render();
     thisEnemy.update();
     if(rectCollision(thisEnemy,player)) gameOver=true;
-    if(thisEnemy.isOffSides(windowSize,windowSize)) enemies.remove(this);
+    if(thisEnemy.isOffSides()) enemies.remove(this);
   }
+  for(int iii=0;iii<playersBullets.size();iii++) {
+    MotileRect thisBullet = (MotileRect) playersBullets.get(iii);
+    thisBullet.render();
+    thisBullet.update(); //is somehow affecting player.pos
+    //collisiondetect against enemies, plz
+    if(thisBullet.isOffSides()) playersBullets.remove(this);
+  }
+  
   player.render();
   player.update();
   player.moveself();
-  if(player.isOffSides(windowSize,windowSize)) gameOver=true; 
+  if(player.isOffSides()) gameOver=true; 
+  
   if(gameOver) setup(); // a call to setup(); resets the game :D
 }
