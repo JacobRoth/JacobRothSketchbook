@@ -1,42 +1,24 @@
-final int windowSize = 500;
-int[][] heatarray = new int[windowSize][windowSize];
-int[][] bufferarray = new int[windowSize][windowSize];
-int totalheat = 0;
-
+float jjj;
 void setup() {
-  size(windowSize, windowSize);
-  frameRate(200);
-  for (int iii=0; iii<=(windowSize-1); iii++) {
-    for (int jjj=0; jjj<=(windowSize-1); jjj++) {
-      heatarray[iii][jjj] = round((noise(iii/200,jjj/200)*200));
-    }
-  }
+  size(300,300);
+  jjj=0;
 }
-
 void draw() {
-  println(millis());
-  /*
-  totalheat = 0;
-  bufferarray = heatarray;
-  for (int iii=0; iii<=(windowSize-1); iii++) {
-    for (int jjj=0; jjj<=(windowSize-1); jjj++) {
-      if ((iii>0) && (iii<windowSize-1) && (jjj>0) && (jjj<windowSize-1)) { //middle piece
-        bufferarray[iii][jjj] = (heatarray[iii+1][jjj] + heatarray[iii-1][jjj] + heatarray[iii][jjj+1] + heatarray [iii][jjj-1])/4;
-      } else if ((iii==0) && (jjj==0)) { //topleft corner
-        bufferarray[iii][jjj] = (heatarray[iii+1][jjj] + heatarray[iii][jjj+1])/2;
-      } else if ((iii==0) && (jjj==windowSize-1)) { //bottomleft corner
-        bufferarray[iii][jjj] = (heatarray[iii+1][jjj] + heatarray[iii][jjj-1])/2;
-      }
-      
-      
-      stroke(heatarray[iii][jjj],heatarray[iii][jjj],heatarray[iii][jjj]);
-      totalheat += heatarray[iii][jjj];
-      point(iii,jjj);
-    }
-  }
-  heatarray = bufferarray;
-  println(totalheat/250000); */
+  background(140);
+  line(150,150,mouseX,mouseY);
+  //line(150,150,mouseX,150);
+  //line(mouseX,150,mouseX,mouseY);
+  float dy = mouseY-150;
+  float dx = mouseX-150;
+  
+  
+  float atanval = atan2(dx,dy); //dist-x, dist-y - the initial vector
+  PVector oneVec = new PVector(sin(atanval+.1),cos(atanval+.1)); //add or sub from that ATAN
+  PVector twoVec = new PVector(sin(atanval-.1),cos(atanval-.1)); // ''
+  oneVec.mult(150); //scale to match
+  twoVec.mult(150);
+  line(150,150,150+oneVec.x,150+oneVec.y);
+  line(150,150,150+twoVec.x,150+twoVec.y);
+  println("--------------------------------------");
+ 
 }
-
-
-
