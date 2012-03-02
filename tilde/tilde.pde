@@ -1,13 +1,11 @@
 /*GPL licenced */
 final int windowSize = 600;
 PFont f;
-long frame = 0;
 
 PlayerRect player;
 ArrayList enemies;
 ArrayList playersBullets;
 ArrayList enemiesBullets;
-
 
 boolean[] keys = new boolean[526];
 boolean checkKey(String k) {
@@ -28,22 +26,19 @@ void keyReleased()
 { 
   keys[keyCode] = false;
 }
-void mousePressed() {
-  player.somewep.fire(player.pos,mouseX,mouseY,playersBullets);
-}
 
 void setup() { 
   size(windowSize,windowSize);
-  frameRate(40);
+  frameRate(30);
   f = loadFont("Braggadocio-48.vlw");
   player = new PlayerRect(new PVector(300,300),24,24,255,0,0);
   enemies = new ArrayList();
   playersBullets = new ArrayList();
-  
 }
 void draw() {
+  if(frameRate<25) println(frameRate);
+  
   boolean gameOver = false;
-  frame++;
   background(0);
   
   for(int iii=0;iii<enemies.size();iii++) {
@@ -57,13 +52,15 @@ void draw() {
     MotileRect thisBullet = (MotileRect) playersBullets.get(iii);
     thisBullet.render();
     thisBullet.update(); //is somehow affecting player.pos
+
     //collisiondetect against enemies, plz
-    if(thisBullet.isOffSides()) playersBullets.remove(this);
+    if(thisBullet.isOffSides()) playersBullets.remove(thisBullet);
   }
-  
+
   player.render();
   player.update();
   player.moveself();
+  if(mousePressed) player.fireMyWeapon();
   if(player.isOffSides()) gameOver=true; 
   
   if(gameOver) setup(); // a call to setup(); resets the game :D
