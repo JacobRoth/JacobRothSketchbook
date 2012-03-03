@@ -1,5 +1,5 @@
 /*GPL licenced */
-final int windowSize = 600;
+final int windowSize = 765;
 PFont f;
 
 PlayerRect player;
@@ -36,7 +36,7 @@ void setup() {
   playersBullets = new ArrayList();
 }
 void draw() {
-  if(frameRate<25) println(frameRate);
+  //println(frameRate);
   
   boolean gameOver = false;
   background(0);

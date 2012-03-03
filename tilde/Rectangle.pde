@@ -65,7 +65,7 @@ class MotileRect extends Rectangle {
   PVector speed; //in pixels per 1/10th second.
   MotileRect(PVector inpos, int inw, int inh, int inr, int ing, int inb, PVector inspd) {
     super(inpos, inw, inh, inr, ing, inb);
-    speed = inspd;
+    speed = inspd.get();
   }
   void update() {
     pos.add(speed);
