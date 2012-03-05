@@ -1,5 +1,10 @@
+/*TODO:
+make a Bullet class,
+
+*/
+
 /*GPL licenced */
-final int windowSize = 765;
+final int windowSize = 720;
 PFont f;
 
 PlayerRect player;
@@ -49,14 +54,19 @@ void draw() {
     if(thisEnemy.isOffSides()) enemies.remove(this);
   }
   for(int iii=0;iii<playersBullets.size();iii++) {
-    MotileRect thisBullet = (MotileRect) playersBullets.get(iii);
+    if(playersBullets.get(iii).getClass().getSimpleName().equals("MotileRect")) {
+      MotileRect thisBullet = (MotileRect) playersBullets.get(iii);
+    } else if (playersBullets.get(iii).getClass().getSimpleName().equals("Zapwave")) {
+      Zapwave thisBullet = (Zapwave) playersBullets.get(iii);
+    }
+    
     thisBullet.render();
     thisBullet.update(); //is somehow affecting player.pos
 
     //collisiondetect against enemies, plz
     if(thisBullet.isOffSides()) playersBullets.remove(thisBullet);
   }
-
+  
   player.render();
   player.update();
   player.moveself();
