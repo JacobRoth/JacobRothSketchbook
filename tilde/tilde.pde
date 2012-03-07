@@ -1,6 +1,5 @@
 /*TODO:
 make a Bullet class,
-
 */
 
 /*GPL licenced */
@@ -9,6 +8,7 @@ PFont f;
 
 PlayerRect player;
 ArrayList enemies;
+
 ArrayList playersBullets;
 ArrayList enemiesBullets;
 
@@ -41,7 +41,7 @@ void setup() {
   playersBullets = new ArrayList();
 }
 void draw() {
-  //println(frameRate);
+  println(frameRate);
   
   boolean gameOver = false;
   background(0);
@@ -54,17 +54,15 @@ void draw() {
     if(thisEnemy.isOffSides()) enemies.remove(this);
   }
   for(int iii=0;iii<playersBullets.size();iii++) {
-    if(playersBullets.get(iii).getClass().getSimpleName().equals("MotileRect")) {
+    if(playersBullets.get(iii) instanceOf jfkdsa;fjdksa;fldkhsafhdshafdhafjkdsalkfhdsjklahfdjkwsalfhdjkslahjl) {
       MotileRect thisBullet = (MotileRect) playersBullets.get(iii);
-    } else if (playersBullets.get(iii).getClass().getSimpleName().equals("Zapwave")) {
-      Zapwave thisBullet = (Zapwave) playersBullets.get(iii);
-    }
     
-    thisBullet.render();
-    thisBullet.update(); //is somehow affecting player.pos
+      thisBullet.render();
+      thisBullet.update(); //is somehow affecting player.pos
 
-    //collisiondetect against enemies, plz
-    if(thisBullet.isOffSides()) playersBullets.remove(thisBullet);
+      //collisiondetect against enemies, plz
+      if(thisBullet.isOffSides()) playersBullets.remove(thisBullet);
+    }
   }
   
   player.render();

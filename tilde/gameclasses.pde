@@ -126,6 +126,7 @@ class Zapwave { //an ever-expanding wave
   int g;
   int b;
   Zapwave(PVector inpos, float inspeed, int inr, int ing, int inb) {
+    
     pos = inpos.get();
     rad = 1;
     speed = inspeed;

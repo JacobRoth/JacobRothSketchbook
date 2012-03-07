@@ -29,7 +29,6 @@ class Source {
     while (timer.fires()) {
       float randX = random(-1*speed, speed);
       float randY = random(-1*speed, speed);
-      
       holdbullet.add(new Bullet(x, y, 5, 5, r, g, b, randX, randY));
     }
   }
