@@ -22,6 +22,9 @@ class Layer { //has-a fighter, source, bullet ArrayList
       currentbullet.boundrycheck(thisBullets);
       currentbullet.moveSelf();
       if(collDetect(thisFighter,currentbullet)) {
+        thisFighter.r=255;
+        thisFighter.g=255;
+        thisFighter.b=255;
         if (!invincible) gameRunning = false;
       }
     }

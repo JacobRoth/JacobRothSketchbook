@@ -66,7 +66,7 @@ class Fighter extends Rectangle {
   void render() {
     noFill();
     stroke(r, g, b);
-    ellipse(x+(w/2), y+(h/2), w*8, h*8);
+    ellipse(x+(w/2), y+(h/2), w*5, h*5);
     super.render();
   }
   void moveSelf() {

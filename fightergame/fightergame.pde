@@ -1,6 +1,5 @@
 //all globals must be declared out here in globalspace.
 final int windowSize = 500;
-final int difficulty = 1;
 final boolean invincible = false;
 
 int secsrunning = 0;
@@ -17,16 +16,22 @@ boolean gameRunning = false;
 boolean paused = false;
 
 void setup () {
-  size(windowSize, windowSize);
+  size(500, 500); //gotta put those numeric values, not vars, in or ExportApplet chokes.
   frameRate(30);
   f = loadFont("AgencyFB-Reg-48.vlw");
   setLayers();
 }
 
 void setLayers() {
-  layer1 = new Layer(2.5, 255, 0, 0, 400);
-  layer2 = new Layer(5, 0, 255, 0, 1000);
-  layer3 = new Layer(10, 0, 100, 255, 100);
+  layer1 = new Layer(1.5, 255, 0, 0, 400); //red
+  layer2 = new Layer(5, 0, 255, 0, 1000);  //green
+  /*there's currenty super-hackish code down in void runningCycle() {
+    that progressively makes the delay on the green layer (layer 2) get shorter and shorter. There's probably a more
+    elegant way to code difficulty progression, but I'm ok with this.
+  */
+  layer3 = new Layer(4, 0, 100, 255, 100); //blue
+  
+  
   secsrunning = 0;
   secsCounter = new Trigger(1000);
 }
@@ -98,11 +103,16 @@ void pauseCycle() {
 void runningCycle() {
   if (secsCounter.fires()) {
     secsrunning++;
+    if(!(secsrunning>999)) { //ensure we won't be setting the timer's rate to a negative number (this would cause problems)
+      layer2.thisSource.timer.setRate(1000-secsrunning); //reach all the way down into the innards of the green layer and make it harder.
+    }
   }
 
   layer1.activeCycle();
   layer2.activeCycle();
   layer3.activeCycle();
+  
+  
   //checkForPauseInput();
   textFont(f, 26);
   fill(255);
