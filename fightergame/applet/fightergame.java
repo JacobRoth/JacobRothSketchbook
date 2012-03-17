@@ -19,7 +19,6 @@ public class fightergame extends PApplet {
 
 //all globals must be declared out here in globalspace.
 final int windowSize = 500;
-final int difficulty = 1;
 final boolean invincible = false;
 
 int secsrunning = 0;
@@ -36,16 +35,22 @@ boolean gameRunning = false;
 boolean paused = false;
 
 public void setup () {
-  size(windowSize, windowSize);
+  size(500, 500); //gotta put those numeric values, not vars, in or ExportApplet chokes.
   frameRate(30);
   f = loadFont("AgencyFB-Reg-48.vlw");
   setLayers();
 }
 
 public void setLayers() {
-  layer1 = new Layer(2.5f, 255, 0, 0, 400);
-  layer2 = new Layer(5, 0, 255, 0, 1000);
-  layer3 = new Layer(10, 0, 100, 255, 100);
+  layer1 = new Layer(1.5f, 255, 0, 0, 400); //red
+  layer2 = new Layer(5, 0, 255, 0, 1000);  //green
+  /*there's currenty super-hackish code down in void runningCycle() {
+    that progressively makes the delay on the green layer (layer 2) get shorter and shorter. There's probably a more
+    elegant way to code difficulty progression, but I'm ok with this.
+  */
+  layer3 = new Layer(4, 0, 100, 255, 100); //blue
+  
+  
   secsrunning = 0;
   secsCounter = new Trigger(1000);
 }
@@ -91,7 +96,7 @@ public void offCycle() {
   textFont(f, 48);
   text("d", 250, 100);
   text("e", 350, 100);
-  text("By Jacob Roth", 100, 300);
+  text("By Yanom", 100, 300);
   textFont(f, 36);
   text("Press B to start", 200, 350);
   if (checkKey("b")) {
@@ -117,11 +122,16 @@ public void pauseCycle() {
 public void runningCycle() {
   if (secsCounter.fires()) {
     secsrunning++;
+    if(!(secsrunning>999)) { //ensure we won't be setting the timer's rate to a negative number (this would cause problems)
+      layer2.thisSource.timer.setRate(1000-secsrunning); //reach all the way down into the innards of the green layer and make it harder.
+    }
   }
 
   layer1.activeCycle();
   layer2.activeCycle();
   layer3.activeCycle();
+  
+  
   //checkForPauseInput();
   textFont(f, 26);
   fill(255);
@@ -164,6 +174,9 @@ class Layer { //has-a fighter, source, bullet ArrayList
       currentbullet.boundrycheck(thisBullets);
       currentbullet.moveSelf();
       if(collDetect(thisFighter,currentbullet)) {
+        thisFighter.r=255;
+        thisFighter.g=255;
+        thisFighter.b=255;
         if (!invincible) gameRunning = false;
       }
     }
@@ -226,7 +239,6 @@ class Rectangle {
 
 class Fighter extends Rectangle {
   float topspeed;
-
   Fighter (int c1x, int c1y, int inw, int inh, int inr, int ing, int inb, float topspd) {
     super(c1x, c1y, inw, inh, inr, ing, inb);
     topspeed = topspd;
@@ -249,7 +261,7 @@ class Fighter extends Rectangle {
   public void render() {
     noFill();
     stroke(r, g, b);
-    ellipse(x+(w/2), y+(h/2), w*8, h*8);
+    ellipse(x+(w/2), y+(h/2), w*5, h*5);
     super.render();
   }
   public void moveSelf() {
@@ -345,7 +357,6 @@ class Source {
     while (timer.fires()) {
       float randX = random(-1*speed, speed);
       float randY = random(-1*speed, speed);
-      
       holdbullet.add(new Bullet(x, y, 5, 5, r, g, b, randX, randY));
     }
   }

@@ -22,7 +22,7 @@ class PlayerRect extends MotileRect {
     imggreen = loadImage("tildegreen.png");
     imgorange = loadImage("tildeorange.png");
     
-    greenwep = new Gun(3,playerspeed+.02,3,.1); //driftmine lanucher. the playerspeed+.02 is significant - eversoslightly more than player's speed
+    greenwep = new Gun(30,playerspeed+.02,10,.1); //driftmine lanucher. the playerspeed+.02 is significant - eversoslightly more than player's speed
     //so if fired directly behind a moving player, the bullets stay on screen a loooooooooooooooong time and drift slowly
     //bluewep = new Weapon 
     //redwep = new Weapon

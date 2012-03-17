@@ -1,6 +1,5 @@
 //all globals must be declared out here in globalspace.
 final int windowSize = 500;
-//int difficulty = 1;
 final boolean invincible = false;
 
 int secsrunning = 0;
@@ -24,17 +23,17 @@ void setup () {
 }
 
 void setLayers() {
-  layer1 = new Layer(2.5, 255, 0, 0, 400); //red
+  layer1 = new Layer(1.5, 255, 0, 0, 400); //red
   layer2 = new Layer(5, 0, 255, 0, 1000);  //green
   /*there's currenty super-hackish code down in void runningCycle() {
     that progressively makes the delay on the green layer (layer 2) get shorter and shorter. There's probably a more
     elegant way to code difficulty progression, but I'm ok with this.
   */
-  layer3 = new Layer(2.5, 0, 100, 255, 100); //blue
+  layer3 = new Layer(4, 0, 100, 255, 100); //blue
   
   
   secsrunning = 0;
-  secsCounter = new Trigger(1);
+  secsCounter = new Trigger(1000);
 }
 
 void keyPressed() { 

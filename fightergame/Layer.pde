@@ -32,6 +32,7 @@ class Layer { //has-a fighter, source, bullet ArrayList
     thisFighter.boundrycheck(windowSize);
     thisFighter.render();
     thisSource.handle(thisBullets,500);
+    thisSource.render();
   }
   void frozenCycle() {
     for (int iii=0; iii <= (thisBullets.size()-1); iii++) {
@@ -39,5 +40,6 @@ class Layer { //has-a fighter, source, bullet ArrayList
       currentbullet.render();
     }
     thisFighter.render();
+    thisSource.render();
   }
 }

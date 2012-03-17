@@ -54,7 +54,7 @@ void draw() {
     if(thisEnemy.isOffSides()) enemies.remove(this);
   }
   for(int iii=0;iii<playersBullets.size();iii++) {
-    if(playersBullets.get(iii) instanceOf jfkdsa;fjdksa;fldkhsafhdshafdhafjkdsalkfhdsjklahfdjkwsalfhdjkslahjl) {
+    if(playersBullets.get(iii).getClass().getSimpleName().equals("MotileRect")) {
       MotileRect thisBullet = (MotileRect) playersBullets.get(iii);
     
       thisBullet.render();
@@ -62,6 +62,14 @@ void draw() {
 
       //collisiondetect against enemies, plz
       if(thisBullet.isOffSides()) playersBullets.remove(thisBullet);
+    } else if (playersBullets.get(iii).getClass().getSimpleName().equals("Zapwave")) {
+      Zapwave thisWave = (Zapwave) playersBullets.get(iii);
+    
+      thisWave.render();
+      thisWave.update(); //is somehow affecting player.pos
+
+      //collisiondetect against enemies, plz
+      if(thisWave.isOffSides()) playersBullets.remove(thisWave);
     }
   }
   
