@@ -1,5 +1,5 @@
 class PlayerRect extends MotileRect {
-  static final float playerspeed = 10;
+  static final float playerspeed = 8;
   int score;
   PImage img;
   PImage imgred;
@@ -22,11 +22,11 @@ class PlayerRect extends MotileRect {
     imggreen = loadImage("tildegreen.png");
     imgorange = loadImage("tildeorange.png");
     
-    greenwep = new Gun(30,playerspeed+.02,10,.1); //driftmine lanucher. the playerspeed+.02 is significant - eversoslightly more than player's speed
+    greenwep = new Gun(60,playerspeed+.02,20,.1); //driftmine lanucher. the playerspeed+.02 is significant - eversoslightly more than player's speed
     //so if fired directly behind a moving player, the bullets stay on screen a loooooooooooooooong time and drift slowly
     //bluewep = new Weapon 
     //redwep = new Weapon
-    orangewep = new ZapwaveLauncher(2,2); //radial burst cannon
+    orangewep = new ZapwaveLauncher(2,5); //radial burst cannon
     
   }
   void render() {
@@ -150,5 +150,20 @@ class Zapwave { //an ever-expanding wave
   }
   boolean isOffSides() {
     return isOffSides(windowSize,windowSize);
+  }
+}
+
+class MouseMissile extends MotileRect {
+  float accelrate;
+  MouseMissile(PVector inpos, int inw, int inh, int inr, int ing, int inb, PVector inspd, float inacc) {
+    super(inpos,inw,inh,inr,ing,inb,inspd);
+    accelrate = inacc;
+  }
+  void update() {
+    super.update();
+    PVector movementVector = new PVector(mouseX-pos.x,mouseY-pos.y);
+    movementVector.normalize();
+    movementVector.mult(accelrate);
+    speed.add(movementVector);
   }
 }
