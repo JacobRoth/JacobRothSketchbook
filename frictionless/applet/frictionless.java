@@ -19,12 +19,15 @@ public class frictionless extends PApplet {
 
 /* GPL licenced */
 //[CONFIG]
-final int gravMag = 1600;
+final int gravMag = 1000;
 final int windowX = 1024;
 final int windowY = 768;
-final int goldRectSize = 70;
-final int meteorSize = 30;
-final float meteorTopSpeed = 0.5f;
+final int goldRectSize = 100;
+final int meteorSize = 15;
+final float meteorTopSpeed = 1;
+final int coronaStormIntensity = 1;
+final int backgroundBrightness = 100; //from 0 to 255
+final boolean useDynamicBackground = false;
 //[/CONFIG]
 
 PlayerRect player;
@@ -33,13 +36,14 @@ GravRect sun;
 ArrayList meteors;
 Rectangle goldrect = new Rectangle(new PVector(20,20),goldRectSize,goldRectSize,255,255,0,true);
 
-
 PFont f;
 boolean gamerunning = false;
 
+float backgroundNoise=0;
+
 public void setup() { 
   size(1024,768);
-  frameRate(120);
+  frameRate(30);
   set_up_game();
   f = loadFont("TlwgTypist-48.vlw");
 }
@@ -57,8 +61,6 @@ public void activeCycle() {
   player.render();
   player.moveself();
   goldrect.render();
-  
-  
   sun.render();
   sun.affect(player);
   if(rectCollision(sun,player)) gamerunning=false;
@@ -79,7 +81,7 @@ public void activeCycle() {
   if(player.pos.x < 0 || player.pos.x+player.w > windowX ) /*player.speed.x = player.speed.x*-1;*/ gamerunning=false;
   if(player.pos.y < 0 || player.pos.y+player.h > windowY ) /*player.speed.y = player.speed.y*-1;*/ gamerunning=false;
   if(rectCollision(player,goldrect)) {
-    player.score++;
+    player.score+= (1+meteors.size()); //award a bonus for any meteors on screen
     placeGoldRect();
     for(int iii=0; iii<=player.score;iii++) {
       fireMeteor();
@@ -88,14 +90,14 @@ public void activeCycle() {
   textFont(f,30);
   fill(255);
   String scorestr = "Score: " + player.score;
-  text(scorestr,0,750);
+  text(scorestr,0,650);
 }
 
 public void titleScreen() {
   textFont(f,48);
   text("sy\u00dftem",0,40);
-  text("Press ENTER to start", 200,200);
-  if(checkKey("Enter")) {
+  text("Press K to start", 200,200);
+  if(checkKey("K")) {
     set_up_game();
     gamerunning = true;
   }
@@ -105,8 +107,13 @@ public void titleScreen() {
 
 
 public void draw() {
-  background(0);
-  if(gamerunning)  { activeCycle(); } else { titleScreen(); } //one-line if-else with brackets - like a boss.
+  if(useDynamicBackground) {
+    background(noise(backgroundNoise)*backgroundBrightness);
+    backgroundNoise += 0.01f;
+  } else {
+    background(0);
+  }
+  if(gamerunning)  { activeCycle(); } else { titleScreen(); }
 }
 
 class Rectangle {
@@ -134,14 +141,39 @@ class Rectangle {
     this(inpos,inw,inh,inr,ing,inb,false);
   } 
   public void render () {
+    stroke(r,g,b);
     if(hollow) {
-      stroke(r,g,b);
       noFill();
     } else {
       fill(r, g, b);
-      noStroke();
+      for (int iii=0; iii<coronaStormIntensity; iii++) {
+        PVector cr1 = getCoronaPoint();
+        PVector cr2 = getCoronaPoint();
+        line(cr1.x,cr1.y,cr2.x,cr2.y);
+      }
     }
     rect(pos.x, pos.y, w, h);
+    
+    stroke(r,g,b);
+    
+    
+  }
+  public PVector getCoronaPoint() { //corona extends 1/2 the width out the sides of the rect and 1/2 the height out the top and bottom
+  /* finds a point in the corona */
+    int thisX = 0;
+    int thisY = 0;
+    if(random(1)>0.5f) { //x on the left
+      thisX = (int)(random(pos.x-(w/2),pos.x));
+    } else {
+      thisX = (int)(random(pos.x+w,pos.x+(w*1.5f)));
+    }
+    /*if(random(1)>0.5) {
+      thisY = (int)(random(pos.y-(h/2),pos.y));
+    } else {
+      thisY = (int)(random(pos.y+h,pos.y+(h*1.5)));
+    }*/
+    thisY = (int)(random(pos.y-(h/2),pos.y+h+(h/2)));
+    return new PVector(thisX,thisY);
   }
   public float getCX() { //get center-x
     return pos.x+(w/2);
@@ -173,17 +205,17 @@ class PlayerRect extends MotileRect {
     score = 0;
   }
   public void moveself() {
-    if (checkKey("Up")) {
-      speed.y -= .02f;
+    if (checkKey("Up") || checkKey("W")) {
+      speed.y -= .05f;
     }
-    if (checkKey("Down")) {
-      speed.y += .02f;
+    if (checkKey("Down")|| checkKey("S")) {
+      speed.y += .05f;
     }
-    if (checkKey("Left")) {
-      speed.x -= .02f;
+    if (checkKey("Left")|| checkKey("A")) {
+      speed.x -= .05f;
     }
-    if (checkKey("Right")) {
-      speed.x += .02f;
+    if (checkKey("Right")|| checkKey("D")) {
+      speed.x += .05f;
     }
   }
   
@@ -196,17 +228,7 @@ class GravRect extends Rectangle {
     magnitude = inmag;
   }
   
-  /*
-  void affect(MotileRect target) {
-    PVector effect = new PVector( magnitude/(pos.x-target.pos.x), magnitude/(pos.y-target.pos.y));
-    print(effect.x);
-    print(" , ");
-    println(effect.y);
-    //effect.normalize();
-    //effect.mult(magnitude);
-    target.speed.add(effect);
-  }
-  */
+
   public void affect(MotileRect target) {
     // the distance on the x-axis
     float dx = getCX() - target.pos.x;
@@ -251,9 +273,7 @@ public boolean rectCollision(Rectangle rect1, Rectangle rect2) {
   return true;
 }
 /*void mouseClicked() {
-  player.pos.x = mouseX;
-  player.pos.y = mouseY;
-  player.speed = new PVector(0,0); //reset it
+  fireMeteor();
 }*/
 
 
@@ -286,6 +306,7 @@ public void placeGoldRect() {
 
 public void fireMeteor() { //from the edge of the screen.
   int screenedge = (int)(random(0,4));
+  println(screenedge);
   if (screenedge == 0) { //the left edge
     int posx = 1;
     int posy = (int)(random(0,windowY-meteorSize));
@@ -309,6 +330,7 @@ public void fireMeteor() { //from the edge of the screen.
     int posy = windowY-meteorSize;
     float speedx = random(-1*meteorTopSpeed, meteorTopSpeed);
     float speedy = random(0,-1*meteorTopSpeed);
+    meteors.add(new MotileRect(new PVector(posx,posy),meteorSize,meteorSize,0,140,50,new PVector(speedx,speedy)));
   }    
 }
 
@@ -358,6 +380,6 @@ class Trigger { //by kritzikratzi
   }
 }
   static public void main(String args[]) {
-    PApplet.main(new String[] { "--bgcolor=#F0F0F0", "frictionless" });
+    PApplet.main(new String[] { "--bgcolor=#ECE9D8", "frictionless" });
   }
 }

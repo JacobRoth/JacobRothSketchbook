@@ -17,8 +17,9 @@ import java.util.regex.*;
 
 public class fightergame extends PApplet {
 
-//all globals must be declared out here in globalspace.
 final int windowSize = 500;
+final boolean sourceDrift = true;
+final int sourceDriftSpeed = 1;
 final boolean invincible = false;
 
 int secsrunning = 0;
@@ -42,13 +43,13 @@ public void setup () {
 }
 
 public void setLayers() {
-  layer1 = new Layer(1.5f, 255, 0, 0, 400); //red
-  layer2 = new Layer(5, 0, 255, 0, 1000);  //green
+  layer1 = new Layer(1, 255, 0, 0, 1000); //red
+  layer2 = new Layer(2, 0, 255, 0, 1000);  //green
   /*there's currenty super-hackish code down in void runningCycle() {
     that progressively makes the delay on the green layer (layer 2) get shorter and shorter. There's probably a more
     elegant way to code difficulty progression, but I'm ok with this.
   */
-  layer3 = new Layer(4, 0, 100, 255, 100); //blue
+  layer3 = new Layer(3, 0, 100, 255, 100); //blue
   
   
   secsrunning = 0;
@@ -73,12 +74,12 @@ public void draw() {
   background(0);
 
   if (gameRunning) {
-    if (paused) {
-      pauseCycle();
-    } 
-    else {
-      runningCycle();
-    }
+    //if (paused) {
+    //  pauseCycle();
+    //} 
+    //else {
+    runningCycle();
+    //}
   } 
   else {
     offCycle();
@@ -106,7 +107,7 @@ public void offCycle() {
   text(secsrunning, 400, 490);
 }
 
-public void pauseCycle() {
+/*void pauseCycle() {
   layer1.frozenCycle();
   layer2.frozenCycle();
   layer3.frozenCycle();
@@ -117,13 +118,13 @@ public void pauseCycle() {
   text("Press U to unpause", 300, 400);
   checkForPauseInput();
   text(secsrunning, 400, 490);
-}
+}*/
 
 public void runningCycle() {
   if (secsCounter.fires()) {
     secsrunning++;
-    if(!(secsrunning>999)) { //ensure we won't be setting the timer's rate to a negative number (this would cause problems)
-      layer2.thisSource.timer.setRate(1000-secsrunning); //reach all the way down into the innards of the green layer and make it harder.
+    if(layer2.thisSource.timer.getRate()>2) { //ensure we won't be setting the timer's rate to a negative number (this would cause problems)
+      layer2.thisSource.timer.setRate(100-secsrunning); //reach all the way down into the innards of the green layer and make it harder.
     }
   }
 
@@ -184,6 +185,7 @@ class Layer { //has-a fighter, source, bullet ArrayList
     thisFighter.boundrycheck(windowSize);
     thisFighter.render();
     thisSource.handle(thisBullets,500);
+    thisSource.render();
   }
   public void frozenCycle() {
     for (int iii=0; iii <= (thisBullets.size()-1); iii++) {
@@ -191,6 +193,7 @@ class Layer { //has-a fighter, source, bullet ArrayList
       currentbullet.render();
     }
     thisFighter.render();
+    thisSource.render();
   }
 }
 class Rectangle {
@@ -345,15 +348,33 @@ class Source {
     b=ib;
     timer = new Trigger(rate);
   }
-  
+  public void render() {
+    stroke(r,g,b);
+    noFill();
+    line(x,y+8,x-4,y-4);
+    line(x-4,y-4,x+4,y-4); //triangle yay
+    line(x+4,y-4,x,y+8);
+  }
   
   public void handle(ArrayList holdbullet, int windowSize) {
-    /*
-    x = (int)(windowSize*noise(globalnoise));
-    globalnoise += .002;
-    y = (int)(windowSize*noise(globalnoise));
-    globalnoise += .002;
-    */
+    if(sourceDrift) {
+      if(x>windowSize) {
+        x-=sourceDriftSpeed;
+      } else if (x<0) {
+        x+=sourceDriftSpeed;
+      } else {
+        x+=random(-1*sourceDriftSpeed,sourceDriftSpeed+1);
+      }
+      if(y>windowSize) {
+        y-=sourceDriftSpeed;
+      } else if (y<0) {
+        y+=sourceDriftSpeed;
+      } else {
+        y+=random(-1*sourceDriftSpeed,sourceDriftSpeed+1);
+      }
+    }
+    
+    
     while (timer.fires()) {
       float randX = random(-1*speed, speed);
       float randY = random(-1*speed, speed);
@@ -418,6 +439,6 @@ class Trigger{
   }
 }
   static public void main(String args[]) {
-    PApplet.main(new String[] { "--bgcolor=#F0F0F0", "fightergame" });
+    PApplet.main(new String[] { "--bgcolor=#ECE9D8", "fightergame" });
   }
 }

@@ -1,4 +1,3 @@
-//TODO: fix source drifting, and make it good
 final int windowSize = 500;
 final boolean sourceDrift = true;
 final int sourceDriftSpeed = 1;

@@ -34,14 +34,14 @@ void keyReleased()
 
 void setup() { 
   size(windowSize,windowSize);
-  frameRate(30);
+  frameRate(45);
   f = loadFont("Braggadocio-48.vlw");
   player = new PlayerRect(new PVector(300,300),24,24,255,0,0);
   enemies = new ArrayList();
   playersBullets = new ArrayList();
 }
 void draw() {
-  println(frameRate);
+  println(playersBullets);
   
   boolean gameOver = false;
   background(0);
@@ -55,7 +55,7 @@ void draw() {
     if(thisEnemy.isOffSides()) enemies.remove(this);
   }
   for(int iii=0;iii<playersBullets.size();iii++) {
-    if(playersBullets.get(iii).getClass().getSimpleName().equals("MotileRect")) {
+    if(playersBullets.get(iii) instanceof MotileRect) {
       MotileRect thisBullet = (MotileRect) playersBullets.get(iii);
     
       thisBullet.render();
@@ -63,7 +63,7 @@ void draw() {
 
       //collisiondetect against enemies, plz
       if(thisBullet.isOffSides()) playersBullets.remove(thisBullet);
-    } else if (playersBullets.get(iii).getClass().getSimpleName().equals("Zapwave")) {
+    } else if (playersBullets.get(iii) instanceof Zapwave) {
       Zapwave thisWave = (Zapwave) playersBullets.get(iii);
     
       thisWave.render();
