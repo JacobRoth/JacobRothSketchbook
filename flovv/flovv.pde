@@ -1,23 +1,27 @@
 import fullscreen.*;
 import japplemenubar.*;
 import processing.opengl.*;
+
+final int windowX = 800;
+final int windowY = 600;
+
 FullScreen fs;
 PFont f;
 
-PhysicsRect recto;
-PhysicsRect recte;
-ArrayList enemies;
-ArrayList playersBullets;
-ArrayList enemiesBullets;
+PlayerRect player;
 
-final float globalfriction = 0.995;
+ArrayList enemies;
+ArrayList<PhysicsRect> playersBullets;
+ArrayList<PhysicsRect> enemiesBullets;
+
+final float globalfriction = 0.99;
 
 void setup() {
   f = loadFont("AgencyFB-Reg-48.vlw");
-  recto = new PhysicsRect(new PVector(0,200),0,0,color(255,255,0),new PVector(600,600),200);
-  recte = new PhysicsRect(new PVector(200,0),0,0,color(255,0,255),new PVector(40,40),25);
+  player = new PlayerRect(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),200);
+  playersBullets = new ArrayList<PhysicsRect>();
   
-  size(800, 600,OPENGL);
+  size(windowX,windowY,OPENGL);
   frameRate(60);
   
   /* fs = new FullScreen(this);
@@ -26,14 +30,23 @@ void setup() {
 
 
 void draw(){
-  background(0);
-  recto.render();
-  recto.update();
-  recto.frictionate(globalfriction);
+  boolean gameover = false;
   
-  recte.render();
-  recte.update();
-  recte.frictionate(globalfriction);
+  background(0);
+  player.render();
+  player.update();
+  player.frictionate(globalfriction);
+  if(mousePressed) player.shootTowards(mouseX,mouseY,playersBullets);
+  if(player.isOffSides(windowX,windowY)) gameover = true;
+  
+  for(int iii=0;iii<playersBullets.size();iii++) {
+    PhysicsRect foo = (PhysicsRect)playersBullets.get(iii);
+    foo.render();
+    foo.update();
+    foo.frictionate(globalfriction);
+    if(foo.isOffSides(windowX,windowY)) playersBullets.remove(iii);
+  }
+  if(gameover) setup(); //call to setup resets the game.
 }
 
 

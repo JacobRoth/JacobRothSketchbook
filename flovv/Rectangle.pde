@@ -6,7 +6,6 @@ class Rectangle {
 
   color col;
 
-
   Rectangle (PVector inpos, int inw, int inh, color incol) {
     pos = inpos;
     h = inh;
@@ -111,22 +110,47 @@ class PhysicsRect extends MotileRect {
     return retvector;
   }
   float getMomentumScalar() { //for calculating damage and the like.
-    return getMomentumVector().mag();
+    return speed.mag()*mass;
   }
   //void renderMomentumVector() {    stroke(col);    PVector momentum = getMomentumVector();    line(pos.x,pos.y,momentum.x+pos.x,momentum.y+pos.y);  }
 }
-
-/*class CharacterRect extends PhysicsRect {
+class CharacterRect extends PhysicsRect {
   float health;
+  PImage img;
   Gun[] myguns;
-}*/
-//class PlayerRect extends CharacterRect {
+  int currentgun;
+  CharacterRect(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass, float inhealth, PImage inimg) {
+    super(inpos,inw,inh,incol,inspeed,inmass);
+    img = inimg;
+    health = inhealth;                                 //FROM HERE ON OUT, defining attribuites such as guns, health, and images in the class, not making them constructor options.
+    myguns = new Gun[1];
+    myguns[0] = new Gun(0,0,0,0,color(0,0,0),0); //placeholder weapon
+    currentgun = 0;
+  }
+  void shootTowards(float Xloc, float Yloc, ArrayList putbulletshere) {
+    myguns[currentgun].fire(this,Xloc,Yloc,putbulletshere);
+  }
+  void render() {
+    super.render();
+    image(img,pos.x,pos.y);
+  }
+}
+class PlayerRect extends CharacterRect {
+  PlayerRect(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
+    super(inpos,inw,inh,incol,inspeed,inmass,50,loadImage("player.png"));
+    myguns = new Gun[1];
+    myguns[0] = new Gun(100,12,0,QUARTER_PI,color(255,255,255,150),.04);
+  }
+}
   
-  
-/* not using the following, just using a physicsrect of size 0.
+
+
+/*
 class Particle extends PhysicsRect {
-  Particle(PVector inpos, color incol, PVector inforce, float inmass) {
-    super(inpos,1,1,incol,inforce,inmass);
+  float damage;
+  Particle(PVector inpos, color incol, PVector inspeed, float inmass, float indamage) {
+    super(inpos,0,0,incol,inspeed,inmass);
+    damage = indamage;
   }
   void render() {
     stroke(col);

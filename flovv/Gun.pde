@@ -20,7 +20,7 @@ class Gun { //shoots little green squares.
   }
   
   
-  PVector computeShot(MotileRect theShooter, int destX, int destY) {
+  PVector computeShot(MotileRect theShooter, float destX, float destY) {
     float atanval = atan2(destX-theShooter.getCX(),destY-theShooter.getCY()); //find the heading of where were shooting
     float sinRandomness = atanval+random(-1*spreadangle,spreadangle);
     float cosRandomness = atanval+random(-1*spreadangle,spreadangle);
@@ -29,15 +29,26 @@ class Gun { //shoots little green squares.
     effect.normalize();
     effect.mult(projectilespeed);
         
-    effect.add(theShooter.speed); //projectile inheritance! SHAZBOT!
     return effect.get();
   }
+  PVector advShot(PhysicsRect theShooter, float destX, float destY) { 
+    PVector newV = computeShot(theShooter,destX,destY);
+    
+    PVector counterV = newV.get();
+    counterV.mult(-1);                   //these bits apply recoil
+    counterV.mult(projectilemass);
+    theShooter.applyforce(counterV);
+    
+    newV.add(theShooter.speed); //projectile inheritance! SHAZBOT!
+    
+    return newV;
+  }
   
-  void fire(PhysicsRect theShooter, int Xloc, int Yloc, ArrayList putBulletsHere) { 
+  void fire(PhysicsRect theShooter, float Xloc, float Yloc, ArrayList putBulletsHere) { 
     if(lastframeshot+firerate<frameCount) { //enough frames has past
       for(int iii=0;iii<numprojectiles;iii++) { //shot several if we want
         lastframeshot = frameCount;
-        putBulletsHere.add(new PhysicsRect(new PVector(theShooter.getCX(),theShooter.getCY()),0,0,col,computeShot(theShooter,Xloc,Yloc),projectilemass));
+        putBulletsHere.add(new PhysicsRect(new PVector(theShooter.getCX(),theShooter.getCY()),0,0,col,advShot(theShooter,Xloc,Yloc),projectilemass));
       }
     }
   }
