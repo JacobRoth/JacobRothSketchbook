@@ -134,26 +134,28 @@ class CharacterRect extends PhysicsRect {
     super.render();
     image(img,pos.x,pos.y);
   }
+  void takedamage(PhysicsRect touchingMe) { //precondition - touchingMe has been indeed confirmed to be touching me
+    PVector impactspeed = touchingMe.speed.get();
+    impactspeed.sub(speed);
+    impactspeed.mult(touchingMe.mass);
+    health -= impactspeed.mag();
+  }
 }
-class PlayerRect extends CharacterRect {
-  PlayerRect(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
+class Player extends CharacterRect {
+  Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
     super(inpos,inw,inh,incol,inspeed,inmass,50,loadImage("player.png"));
-    myguns = new Gun[1];
-    myguns[0] = new Gun(100,12,0,QUARTER_PI,color(255,255,255,150),.04);
+    myguns = new Gun[4];
+    myguns[0] = new Gun(100 ,12,1  ,QUARTER_PI,color(255,255,255,150),.04);
+    myguns[1] = new Gun(20  ,15,200,.01,       color(255,255,255),1);
+    myguns[2] = new Gun(9001,9 ,100,TWO_PI,    color(255,255,255),1); //OVER NINE THOUSAND!
+    myguns[3] = new Gun(4,   10,1  ,.1,        color(255,255,255),.35);
+  }
+  void update() {
+    super.update();
+    for(int iii=0;iii<playerWepKeys.length;iii++) {
+      if(checkKey(playerWepKeys[iii])) currentgun = iii;
+    }
   }
 }
-  
-
-
-/*
-class Particle extends PhysicsRect {
-  float damage;
-  Particle(PVector inpos, color incol, PVector inspeed, float inmass, float indamage) {
-    super(inpos,0,0,incol,inspeed,inmass);
-    damage = indamage;
-  }
-  void render() {
-    stroke(col);
-    point(pos.x,pos.y);
-  }
-}*/
+//class GenericEnemy extends CharacterRect {
+//}
