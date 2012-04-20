@@ -36,8 +36,8 @@ class Gun { //shoots little green squares.
     
     PVector counterV = newV.get();
     counterV.mult(-1);                   //these bits apply recoil
-    counterV.mult(projectilemass);
-    theShooter.applyforce(counterV);
+    counterV.mult(projectilemass);       //recoil
+    theShooter.applyforce(counterV);     //recoil
     
     newV.add(theShooter.speed); //projectile inheritance! SHAZBOT!
     

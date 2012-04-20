@@ -1,5 +1,5 @@
 /*CONFIG------*/
-final float globalfriction = 0.99;
+final float globalfriction = 0.98;
 final String[] playerWepKeys = {"7","8","9","0"};
 /*-----END CONFIG*/
 
@@ -17,16 +17,19 @@ PFont f;
 Player player;
 CharacterRect testchar;
 
-ArrayList enemies;
+ArrayList<GenericEnemy> enemies;
 ArrayList<PhysicsRect> playersBullets;
 ArrayList<PhysicsRect> enemiesBullets;
 
 void setup() {
   f = loadFont("AgencyFB-Reg-48.vlw");
-  player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),200);
-  testchar = new CharacterRect(new PVector(400,300),24,24,color(0,0,0,0),new PVector(0,0),200,60,loadImage("null.png"));
-  playersBullets = new ArrayList<PhysicsRect>();
   
+  player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),200);
+  enemies = new ArrayList<GenericEnemy>();
+  playersBullets = new ArrayList<PhysicsRect>();
+  enemiesBullets = new ArrayList<PhysicsRect>();
+  
+  enemies.add(new Chaingunner(new PVector(400,300),10,10,color(0,0,0,0),new PVector(0,0)));
   size(windowX,windowY,OPENGL);
   frameRate(60);
   
@@ -49,9 +52,7 @@ void draw(){
   player.frictionate(globalfriction);
   if(mousePressed) player.shootTowards(mouseX,mouseY,playersBullets);
   
-  testchar.render();
-  testchar.update();
-  testchar.frictionate(globalfriction);
+  
   
   if(player.isOffSides(windowX,windowY) || player.health <= 0) gameover = true;
   
@@ -61,9 +62,26 @@ void draw(){
     foo.update();
     //foo.frictionate(globalfriction);    //we'll exempt the bullets from friction, partly for gameplay and partly to reduce lag from all that calc
     if(foo.isOffSides(windowX,windowY)) playersBullets.remove(iii);
-    if(foo.rectCollision(testchar)) testchar.takedamage(foo);
   }
-  println(testchar.health);
+  for(int iii=0;iii<enemiesBullets.size();iii++) {
+    PhysicsRect foo = (PhysicsRect)enemiesBullets.get(iii);
+    foo.render();
+    foo.update();
+    if(foo.isOffSides(windowX,windowY)) enemiesBullets.remove(iii);
+  }
+  for(int iii=0;iii<enemies.size();iii++) {
+    GenericEnemy currentChar = enemies.get(iii);
+    currentChar.render();
+    currentChar.update();
+    currentChar.frictionate(globalfriction);
+    for(int jjj=0;jjj<playersBullets.size();jjj++) {
+      PhysicsRect foo = (PhysicsRect)playersBullets.get(jjj);
+      if(foo.rectCollision(currentChar)) currentChar.takedamage(foo);
+    }
+    currentChar.aquireTarget(player,enemiesBullets);
+    if(currentChar.isOffSides(windowX,windowY) || currentChar.health <=0) enemies.remove(iii);
+  }
+
   if(gameover) setup(); //call to setup resets the game.
 }
 

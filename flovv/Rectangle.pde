@@ -98,10 +98,6 @@ class PhysicsRect extends MotileRect {
     speed.add(newforce);
   }
   void frictionate(float percent) { //super-ghetto-nonrealistic friction math! yAAAY!
-    /*PVector appliedforce = speed.get();
-    appliedforce.mult(mass);
-    appliedforce.mult(-1*coeff);
-    applyforce(appliedforce);  */
     speed.mult(percent);
   }
   PVector getMomentumVector() {
@@ -122,7 +118,7 @@ class CharacterRect extends PhysicsRect {
   CharacterRect(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass, float inhealth, PImage inimg) {
     super(inpos,inw,inh,incol,inspeed,inmass);
     img = inimg;
-    health = inhealth;                                 //FROM HERE ON OUT, defining attribuites such as guns, health, and images in the class, not making them constructor options.
+    health = inhealth;                                 
     myguns = new Gun[1];
     myguns[0] = new Gun(0,0,0,0,color(0,0,0),0); //placeholder weapon
     currentgun = 0;
@@ -132,12 +128,13 @@ class CharacterRect extends PhysicsRect {
   }
   void render() {
     super.render();
-    image(img,pos.x,pos.y);
+    image(img,pos.x,pos.y,w,h);
   }
   void takedamage(PhysicsRect touchingMe) { //precondition - touchingMe has been indeed confirmed to be touching me
     PVector impactspeed = touchingMe.speed.get();
     impactspeed.sub(speed);
     impactspeed.mult(touchingMe.mass);
+    applyforce(impactspeed); //recoil from the shot
     health -= impactspeed.mag();
   }
 }
@@ -145,10 +142,10 @@ class Player extends CharacterRect {
   Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
     super(inpos,inw,inh,incol,inspeed,inmass,50,loadImage("player.png"));
     myguns = new Gun[4];
-    myguns[0] = new Gun(100 ,12,1  ,QUARTER_PI,color(255,255,255,150),.04);
-    myguns[1] = new Gun(20  ,15,200,.01,       color(255,255,255),1);
-    myguns[2] = new Gun(9001,9 ,100,TWO_PI,    color(255,255,255),1); //OVER NINE THOUSAND!
-    myguns[3] = new Gun(4,   10,1  ,.1,        color(255,255,255),.35);
+    myguns[0] = new Gun(100 ,12,1  ,QUARTER_PI,color(255,255,255,150),.04); //thruster
+    myguns[1] = new Gun(20  ,15,200,.01,       color(255,255,255),1);  //sniper
+    myguns[2] = new Gun(5000,9 ,100,TWO_PI,    color(255,255,255),1);  //radial cannon
+    myguns[3] = new Gun(10,  10,2  ,.01,        color(255,255,255),.35); 
   }
   void update() {
     super.update();
@@ -157,5 +154,3 @@ class Player extends CharacterRect {
     }
   }
 }
-//class GenericEnemy extends CharacterRect {
-//}
