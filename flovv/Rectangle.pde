@@ -16,9 +16,9 @@ class Rectangle {
     fill(col);
     stroke(col);
     if(w==0 && h==0) {//if no dimension it's just a tiny point
-      point(pos.x,pos.y);
+    point(pos.x,pos.y);
     } else {
-      rect(pos.x, pos.y, w, h);
+    rect(pos.x, pos.y, w, h);
     }
   }
   
@@ -84,6 +84,19 @@ class MotileRect extends Rectangle {
   void update() {
     pos.add(speed);
   }
+  void handleOffSides(int windowX, int windowY) {
+    if(pos.x < 0)  {
+      pos.x = 0;
+    } else if(pos.x+w > windowX) {
+      pos.x=windowX-w;
+    }  
+      
+    if(pos.y < 0) { 
+      pos.y = 0;
+    } else if(pos.y+h > windowY) {
+      pos.y=windowY-h;
+    }
+  }
 }
 
 class PhysicsRect extends MotileRect {
@@ -139,18 +152,25 @@ class CharacterRect extends PhysicsRect {
   }
 }
 class Player extends CharacterRect {
+  Gun thruster;
   Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
-    super(inpos,inw,inh,incol,inspeed,inmass,50,loadImage("player.png"));
+    super(inpos,inw,inh,incol,inspeed,inmass,500,loadImage("player.png"));
+    
+    thruster = new Gun(100 ,10,1  ,1.1781,color(255,255,255,150),.1); //thruster (3/8 PI spread)
+    
     myguns = new Gun[4];
-    myguns[0] = new Gun(100 ,12,1  ,QUARTER_PI,color(255,255,255,150),.04); //thruster
-    myguns[1] = new Gun(20  ,15,200,.01,       color(255,255,255),1);  //sniper
-    myguns[2] = new Gun(5000,9 ,100,TWO_PI,    color(255,255,255),1);  //radial cannon
-    myguns[3] = new Gun(10,  10,2  ,.01,        color(255,255,255),.35); 
+    myguns[0] = new Gun(250 ,12,50  ,0.3927,color(255,255,255,150),1); //shotgun (1/8 PI spread)
+    myguns[1] = new Gun(20  ,16,200,.01,       color(255,255,255),2);  //bolt
+    myguns[2] = new Gun(5000,9 ,400,PI,    color(255,255,255),1);  //360 radial cannon
+    myguns[3] = new Gun(10,  10,2  ,.01,        color(255,255,255),.35); //chaingun
   }
   void update() {
     super.update();
     for(int iii=0;iii<playerWepKeys.length;iii++) {
       if(checkKey(playerWepKeys[iii])) currentgun = iii;
     }
+  }
+  void thrustTowards(float Xloc, float Yloc, ArrayList putbulletshere) {
+    thruster.fire(this,Xloc,Yloc,putbulletshere);
   }
 }
