@@ -84,19 +84,6 @@ class MotileRect extends Rectangle {
   void update() {
     pos.add(speed);
   }
-  void handleOffSides(int windowX, int windowY) {
-    if(pos.x < 0)  {
-      pos.x = 0;
-    } else if(pos.x+w > windowX) {
-      pos.x=windowX-w;
-    }  
-      
-    if(pos.y < 0) { 
-      pos.y = 0;
-    } else if(pos.y+h > windowY) {
-      pos.y=windowY-h;
-    }
-  }
 }
 
 class PhysicsRect extends MotileRect {
@@ -120,6 +107,26 @@ class PhysicsRect extends MotileRect {
   }
   float getMomentumScalar() { //for calculating damage and the like.
     return speed.mag()*mass;
+  }
+  void handleOffSides(int windowX, int windowY) {
+    if(pos.x < 0){
+      pos.x = 0;
+      speed.x = speed.x*-1;
+      frictionate(.8);
+    } else if (pos.x+w > windowX) {
+      pos.x = windowX-w;
+      speed.x = speed.x*-1;
+      frictionate(.8);
+    }  
+    if(pos.y < 0 ) { 
+      pos.y=0;
+      speed.y = speed.y*-1;
+      frictionate(.8);
+    } else if (pos.y+h > windowY) {
+      pos.y=windowY-h;
+      speed.y = speed.y*-1;
+      frictionate(.8);
+    }
   }
   //void renderMomentumVector() {    stroke(col);    PVector momentum = getMomentumVector();    line(pos.x,pos.y,momentum.x+pos.x,momentum.y+pos.y);  }
 }
@@ -156,7 +163,7 @@ class Player extends CharacterRect {
   Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
     super(inpos,inw,inh,incol,inspeed,inmass,500,loadImage("player.png"));
     
-    thruster = new Gun(100 ,10,1  ,1.1781,color(255,255,255,150),.1); //thruster (3/8 PI spread)
+    thruster = new Gun(100 ,20,1  ,1.1781,color(255,255,255,150),.05); //thruster (3/8 PI spread)
     
     myguns = new Gun[4];
     myguns[0] = new Gun(250 ,12,50  ,0.3927,color(255,255,255,150),1); //shotgun (1/8 PI spread)

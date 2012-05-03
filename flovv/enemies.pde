@@ -12,7 +12,7 @@ class Chaingunner extends GenericEnemy {
   Chaingunner(PVector inpos, PVector inspeed) {
     super(inpos,20,20,color(0,0,0,0),inspeed,240,400,loadImage("chaingunner.png")); //no need to supply height, width, color, mass, health, or image - these hardcoded.
     myguns = new Gun[1];
-    myguns[0] = new Gun(1,9,2,.005,color(0,200,255),.1); 
+    myguns[0] = new Gun(1,9,2,0,color(0,255,255),.1); 
   }
 }
 class Sniper extends GenericEnemy {
@@ -28,30 +28,31 @@ void randInsertEnemy(ArrayList enemys) { //needs fixing in terms of all the f***
   int enemySize = 20; //max size
   float enemyTopSpeed = 10;
   int screenedge = (int)(random(0,4));
+  int posx = 0;
+  int posy = 0;
+  float speedx = 0;
+  float speedy = 0;
   if (screenedge == 0) { //the left edge
-    int posx = 1;
-    int posy = (int)(random(0,windowY-enemySize));
-    float speedx = random(0,enemyTopSpeed);
-    float speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
-    enemys.add(new Chaingunner(new PVector(posx,posy),new PVector(speedx,speedy)));
+    posx = 1;
+    posy = (int)(random(0,windowY-enemySize));
+    speedx = random(0,enemyTopSpeed);
+    speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
   } else if (screenedge == 1) { //the right edge
-    int posx = windowX-enemySize;
-    int posy = (int)(random(0,windowY-enemySize));
-    float speedx = random(-1*enemyTopSpeed,0);
-    float speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
-    enemys.add(new Chaingunner(new PVector(posx,posy),new PVector(speedx,speedy)));
+    posx = windowX-enemySize;
+    posy = (int)(random(0,windowY-enemySize));
+    speedx = random(-1*enemyTopSpeed,0);
+    speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
   } else if (screenedge == 2) { //the top
-    int posx = (int)(random(0,windowX-enemySize));
-    int posy = 0;
-    float speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
-    float speedy = random(0,enemyTopSpeed);
-    enemys.add(new Chaingunner(new PVector(posx,posy),new PVector(speedx,speedy)));
+    posx = (int)(random(0,windowX-enemySize));
+    posy = 0;
+    speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
+    speedy = random(0,enemyTopSpeed);
   } else if (screenedge == 3) { //the bottom
-    int posx = (int)(random(0,windowX-enemySize));
-    int posy = windowY-enemySize;
-    float speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
-    float speedy = random(-1*enemyTopSpeed,0);
-    enemys.add(new Chaingunner(new PVector(posx,posy),new PVector(speedx,speedy)));
+    posx = (int)(random(0,windowX-enemySize));
+    posy = windowY-enemySize;
+    speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
+    speedy = random(-1*enemyTopSpeed,0);
   }    
+  enemys.add(new Sniper(new PVector(posx,posy),new PVector(speedx,speedy)));
 }
 

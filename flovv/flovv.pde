@@ -33,7 +33,7 @@ void setup() {
     //no fullscreen running,then
   }*/
   fs = new FullScreen(this);
-  fs.enter();
+  //fs.enter();
   gamesetup(); 
 }
 
@@ -105,11 +105,12 @@ void draw(){
   for(int iii=0;iii<enemies.size();iii++) {
     GenericEnemy currentChar = enemies.get(iii);
     currentChar.render();
+    currentChar.handleOffSides(windowX,windowY);
     currentChar.update();
     currentChar.frictionate(globalfriction);
     
     currentChar.aquireTarget(player,enemiesBullets);
-    if(currentChar.isOffSides(windowX,windowY) || currentChar.health <=0) enemies.remove(iii);
+    if(currentChar.health <=0) enemies.remove(iii);
   }
 
   if(gameover) gamesetup(); 
