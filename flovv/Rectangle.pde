@@ -108,24 +108,24 @@ class PhysicsRect extends MotileRect {
   float getMomentumScalar() { //for calculating damage and the like.
     return speed.mag()*mass;
   }
-  void handleOffSides(int windowX, int windowY) {
+  void handleOffSides(int windowX, int windowY, float wallreduce) {
     if(pos.x < 0){
       pos.x = 0;
       speed.x = speed.x*-1;
-      frictionate(.8);
+      frictionate(wallreduce);
     } else if (pos.x+w > windowX) {
       pos.x = windowX-w;
       speed.x = speed.x*-1;
-      frictionate(.8);
+      frictionate(wallreduce);
     }  
     if(pos.y < 0 ) { 
       pos.y=0;
       speed.y = speed.y*-1;
-      frictionate(.8);
+      frictionate(wallreduce);
     } else if (pos.y+h > windowY) {
       pos.y=windowY-h;
       speed.y = speed.y*-1;
-      frictionate(.8);
+      frictionate(wallreduce);
     }
   }
   //void renderMomentumVector() {    stroke(col);    PVector momentum = getMomentumVector();    line(pos.x,pos.y,momentum.x+pos.x,momentum.y+pos.y);  }
@@ -161,7 +161,7 @@ class CharacterRect extends PhysicsRect {
 class Player extends CharacterRect {
   Gun thruster;
   Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
-    super(inpos,inw,inh,incol,inspeed,inmass,500,loadImage("player.png"));
+    super(inpos,inw,inh,incol,inspeed,inmass,1500,loadImage("player.png"));
     
     thruster = new Gun(100 ,20,1  ,1.1781,color(255,255,255,150),.05); //thruster (3/8 PI spread)
     

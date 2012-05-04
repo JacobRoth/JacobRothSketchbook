@@ -12,14 +12,14 @@ class Chaingunner extends GenericEnemy {
   Chaingunner(PVector inpos, PVector inspeed) {
     super(inpos,20,20,color(0,0,0,0),inspeed,240,400,loadImage("chaingunner.png")); //no need to supply height, width, color, mass, health, or image - these hardcoded.
     myguns = new Gun[1];
-    myguns[0] = new Gun(1,9,2,0,color(0,255,255),.1); 
+    myguns[0] = new Gun(11,11,11,0,color(0,255,255),.1); 
   }
 }
 class Sniper extends GenericEnemy {
   Sniper(PVector inpos,  PVector inspeed) {
     super(inpos,15,15,color(0,0,0,0),inspeed,200,400,loadImage("sniper.png"));
     myguns = new Gun[1];
-    myguns[0] = new Gun(9,18,200,.005,color(0,125,255),1); 
+    myguns[0] = new Gun(50,17,300,0,color(0,125,255),1); 
   }
 }
 

@@ -1,6 +1,11 @@
+/*DESCRIPTION ------
+floVV is a 2d arena game based on realistic physics;
+
+----------END DESCRIPTION*/
 /*CONFIG------*/
-final float globalfriction = 0.98;
-final String[] playerWepKeys = {"7","8","9","0"};
+final float globalfriction = 1;
+final float wallreduce = .4;
+final String[] playerWepKeys = {"1","2","3","4"};
 /*-----END CONFIG*/
 
 
@@ -64,6 +69,13 @@ void draw(){
   boolean gameover = false;
   
   background(0);
+  
+  stroke(255);
+  line(1,1,1,windowY);
+  line(1,windowY-1,windowX-1,windowY-1);
+  line(windowX-1,windowY-1,windowX-1,1);
+  line(windowX-1,1,1,1);
+  
   fill(255);
   text("Health: "+(int)player.health,0,590);
   text(frameCount/60,770,590);
@@ -73,7 +85,7 @@ void draw(){
   //if(player.isOffSides(windowX,windowY)) player.speed = new PVector(0,0);
   player.frictionate(globalfriction);
   
-  player.handleOffSides(windowX,windowY);
+  player.handleOffSides(windowX,windowY,wallreduce);
   if(player.health <= 0) gameover = true;
   
   if(frameCount%70==0) randInsertEnemy(enemies);
@@ -105,7 +117,7 @@ void draw(){
   for(int iii=0;iii<enemies.size();iii++) {
     GenericEnemy currentChar = enemies.get(iii);
     currentChar.render();
-    currentChar.handleOffSides(windowX,windowY);
+    currentChar.handleOffSides(windowX,windowY,wallreduce);
     currentChar.update();
     currentChar.frictionate(globalfriction);
     
