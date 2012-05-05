@@ -18,6 +18,7 @@ final int windowY = 600;
 
 FullScreen fs;
 PFont f;
+int gamestate;
 
 Player player;
 CharacterRect testchar;
@@ -27,6 +28,7 @@ ArrayList<PhysicsRect> playersBullets;
 ArrayList<PhysicsRect> enemiesBullets;
 
 void setup() {
+  gamestate = 0; //titleScreen
   f = loadFont("AgencyFB-Reg-48.vlw");
   textFont(f,26);
   size(windowX,windowY,OPENGL);
@@ -44,7 +46,7 @@ void setup() {
 
 void gamesetup() {
   frameCount = 0;
-  
+  gamestate = 1; //running
   player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),200);
   enemies = new ArrayList<GenericEnemy>();
   playersBullets = new ArrayList<PhysicsRect>();
@@ -52,10 +54,24 @@ void gamesetup() {
   
 }
 
-void mousePressed() {
-  
+void titleScreen () {
+    fill(255);
+  textFont(f, 48);
+  text("f", 50, 100);
+  textFont(f, 120);
+  text("A", 150, 100);
+  textFont(f, 48);
+  text("d", 250, 100);
+  text("e", 350, 100);
+  text("By Yanom", 100, 300);
+  textFont(f, 36);
+  text("Press B to start", 200, 350);
+  if (checkKey("b")) {
+    setLayers();
+    gameRunning=true;
+  }
+  text(secsrunning, 400, 490);
 }
-
 
 void draw(){
   if(mousePressed) {
