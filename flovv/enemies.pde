@@ -52,7 +52,11 @@ void randInsertEnemy(ArrayList enemys) { //needs fixing in terms of all the f***
     posy = windowY-enemySize;
     speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
     speedy = random(-1*enemyTopSpeed,0);
-  }    
-  enemys.add(new Sniper(new PVector(posx,posy),new PVector(speedx,speedy)));
+  }
+  int enemytype = (int)(random(0,2));
+  if(enemytype == 0) 
+    enemys.add(new Sniper(new PVector(posx,posy),new PVector(speedx,speedy)));
+  else if(enemytype == 1)
+    enemys.add(new Chaingunner(new PVector(posx,posy),new PVector(speedx,speedy)));
 }
 

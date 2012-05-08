@@ -147,7 +147,7 @@ class CharacterRect extends PhysicsRect {
     myguns[currentgun].fire(this,Xloc,Yloc,putbulletshere);
   }
   void render() {
-    super.render();
+    //super.render();
     image(img,pos.x,pos.y,w,h);
   }
   void takedamage(PhysicsRect touchingMe) { //precondition - touchingMe has been indeed confirmed to be touching me
@@ -163,13 +163,13 @@ class Player extends CharacterRect {
   Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
     super(inpos,inw,inh,incol,inspeed,inmass,1500,loadImage("player.png"));
     
-    thruster = new Gun(100 ,20,1  ,1.1781,color(255,255,255,150),.05); //thruster (3/8 PI spread)
+    thruster = new Gun(100 ,20,1  ,1.1781,color(255,255,255,150),.06); //thruster (3/8 PI spread)
     
     myguns = new Gun[4];
     myguns[0] = new Gun(250 ,12,50  ,0.3927,color(255,255,255,150),1); //shotgun (1/8 PI spread)
-    myguns[1] = new Gun(20  ,16,200,.01,       color(255,255,255),2);  //bolt
+    myguns[1] = new Gun(40  ,17,200,.01,        color(255,255,255),3);  //bolt
     myguns[2] = new Gun(5000,9 ,400,PI,    color(255,255,255),1);  //360 radial cannon
-    myguns[3] = new Gun(10,  10,2  ,.01,        color(255,255,255),.35); //chaingun
+    myguns[3] = new Gun(10,  20,2  ,.01,        color(255,255,255),.35); //chaingun
   }
   void update() {
     super.update();

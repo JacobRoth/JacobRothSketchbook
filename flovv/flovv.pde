@@ -1,11 +1,18 @@
 /*DESCRIPTION ------
-floVV is a 2d arena game based on realistic physics;
+floVV is a 2d arena game based on realistic physics!
+projectile inheritance and physically realistic recoil (on the shooter and the target) are implemented.
+bullet damage in floVV is calculated not based on weapon types or on arbitrary damage calculations, but on the actual kinetic force imparted by the bullet.
+your only means of movement in floVV is weapon recoil, with some "thruster" weapons intended entirely for this purpose.
+
+use the mouse to aim your character, then right click on the game screen to use your jets and left click to fire your weapons. number keys 1 thru 4 switch weapons.
 
 ----------END DESCRIPTION*/
 /*CONFIG------*/
 final float globalfriction = 1;
 final float wallreduce = .4;
 final String[] playerWepKeys = {"1","2","3","4"};
+final String thrustKey = "W";
+final String gunKey = "Q";
 /*-----END CONFIG*/
 
 
@@ -39,15 +46,14 @@ void setup() {
   } catch (Exception e) {
     //no fullscreen running,then
   }*/
-  fs = new FullScreen(this);
-  //fs.enter();
-  gamesetup(); 
+  //fs = new FullScreen(this);
+  //fs.enter(); 
 }
 
 void gamesetup() {
   frameCount = 0;
   gamestate = 1; //running
-  player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),200);
+  player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),300);
   enemies = new ArrayList<GenericEnemy>();
   playersBullets = new ArrayList<PhysicsRect>();
   enemiesBullets = new ArrayList<PhysicsRect>();
@@ -55,31 +61,28 @@ void gamesetup() {
 }
 
 void titleScreen () {
-    fill(255);
+  background(0);
+  fill(0,0,255);
   textFont(f, 48);
   text("f", 50, 100);
-  textFont(f, 120);
-  text("A", 150, 100);
-  textFont(f, 48);
-  text("d", 250, 100);
-  text("e", 350, 100);
+  text("l", 90, 100);
+  text("o", 140,100);
+  text("V", 240,100);
+  text("V", 350,100);
+  text("Beta!!111!!!!!111!",400,200);
   text("By Yanom", 100, 300);
   textFont(f, 36);
   text("Press B to start", 200, 350);
   if (checkKey("b")) {
-    setLayers();
-    gameRunning=true;
+    gamesetup();
   }
-  text(secsrunning, 400, 490);
 }
 
-void draw(){
-  if(mousePressed) {
-    if (mouseButton == LEFT) {
-      player.shootTowards(mouseX,mouseY,playersBullets);
-    } else if (mouseButton == RIGHT) {
-      player.thrustTowards(mouseX,mouseY,playersBullets);
-    }
+void gameCycle() {
+  if (checkKey(gunKey) || (mousePressed  && mouseButton == LEFT)) {
+    player.shootTowards(mouseX,mouseY,playersBullets);
+  } else if (checkKey(thrustKey) || (mousePressed  && mouseButton == RIGHT)) {
+    player.thrustTowards(mouseX,mouseY,playersBullets);
   }
   
   boolean gameover = false;
@@ -141,7 +144,15 @@ void draw(){
     if(currentChar.health <=0) enemies.remove(iii);
   }
 
-  if(gameover) gamesetup(); 
+  if(gameover) gamestate =0; 
+}
+
+void draw(){
+  if(gamestate == 0) {
+    titleScreen();
+  } else if (gamestate==1) {
+    gameCycle();
+  }
 }
 
 
