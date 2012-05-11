@@ -167,7 +167,7 @@ class Player extends CharacterRect {
     
     myguns = new Gun[4];
     myguns[0] = new Gun(250 ,12,50  ,0.3927,color(255,255,255,150),1); //shotgun (1/8 PI spread)
-    myguns[1] = new Gun(40  ,17,200,.01,        color(255,255,255),3);  //bolt
+    myguns[1] = new Gun(40  ,37,200,.01,        color(255,255,255),1);  //bolt
     myguns[2] = new Gun(5000,9 ,400,PI,    color(255,255,255),1);  //360 radial cannon
     myguns[3] = new Gun(10,  20,2  ,.01,        color(255,255,255),.35); //chaingun
   }
