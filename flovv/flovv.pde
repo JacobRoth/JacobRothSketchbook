@@ -25,7 +25,11 @@ final int windowY = 600;
 
 FullScreen fs;
 PFont f;
+ArrayList<PVector> titleScreenPoints;
+final int maxTSPoints = 70;
+
 int gamestate;
+WavesData wav;
 
 Player player;
 CharacterRect testchar;
@@ -38,6 +42,7 @@ void setup() {
   gamestate = 0; //titleScreen
   f = loadFont("AgencyFB-Reg-48.vlw");
   textFont(f,26);
+  titleScreenPoints = new ArrayList<PVector>();
   size(windowX,windowY,OPENGL);
   frameRate(60);
   
@@ -54,6 +59,7 @@ void gamesetup() {
   frameCount = 0;
   gamestate = 1; //running
   player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),300);
+  wav = new WavesData();
   enemies = new ArrayList<GenericEnemy>();
   playersBullets = new ArrayList<PhysicsRect>();
   enemiesBullets = new ArrayList<PhysicsRect>();
@@ -61,6 +67,9 @@ void gamesetup() {
 }
 
 void titleScreen () {
+  if(titleScreenPoints.size()>maxTSPoints) {
+    titleScreenPoints = new ArrayList<PVector>();
+  }
   background(0);
   fill(0,0,255);
   textFont(f, 48);
@@ -97,7 +106,7 @@ void gameCycle() {
   
   fill(255);
   text("Health: "+(int)player.health,0,590);
-  text(frameCount/60,770,590);
+  text("Wave: "+wav.currentwave,700,590);
   
   player.render();
   player.update();
@@ -107,19 +116,26 @@ void gameCycle() {
   player.handleOffSides(windowX,windowY,wallreduce);
   if(player.health <= 0) gameover = true;
   
-  if(frameCount%70==0) randInsertEnemy(enemies);
+  if(enemies.size() == 0) { //wave over!
+    wav.inject(enemies); //get a new wave for me
+    player.refreshHealth();
+  }
   
   for(int iii=0;iii<playersBullets.size();iii++) {
     PhysicsRect foo = (PhysicsRect)playersBullets.get(iii);
     foo.render();
     foo.update();
     //foo.frictionate(globalfriction);    //we'll exempt the bullets from friction, partly for gameplay and partly to reduce lag from all that calc
-    if(foo.isOffSides(windowX,windowY)) playersBullets.remove(iii);
-    for(int jjj=0;jjj<enemies.size();jjj++) {
-      GenericEnemy e = (GenericEnemy)enemies.get(jjj);
-      if(e.rectCollision(foo)) {
-        e.takedamage(foo);
-        playersBullets.remove(iii);
+    if(foo.isOffSides(windowX,windowY)) {
+      playersBullets.remove(iii);
+    } else { //isn't off screen so check enemy collision
+      for(int jjj=0;jjj<enemies.size();jjj++) {
+        GenericEnemy e = (GenericEnemy)enemies.get(jjj);
+        if(e.rectCollision(foo)) {
+          e.takedamage(foo);
+          playersBullets.remove(iii);
+          break;
+        }
       }
     }
   }

@@ -132,13 +132,15 @@ class PhysicsRect extends MotileRect {
 }
 class CharacterRect extends PhysicsRect {
   float health;
+  float maxhealth;
   PImage img;
   Gun[] myguns;
   int currentgun;
   CharacterRect(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass, float inhealth, PImage inimg) {
     super(inpos,inw,inh,incol,inspeed,inmass);
     img = inimg;
-    health = inhealth;                                 
+    health = inhealth;
+    maxhealth = inhealth;    
     myguns = new Gun[1];
     myguns[0] = new Gun(0,0,0,0,color(0,0,0),0); //placeholder weapon
     currentgun = 0;
@@ -149,6 +151,9 @@ class CharacterRect extends PhysicsRect {
   void render() {
     //super.render();
     image(img,pos.x,pos.y,w,h);
+  }
+  void refreshHealth() {
+    health = maxhealth;
   }
   void takedamage(PhysicsRect touchingMe) { //precondition - touchingMe has been indeed confirmed to be touching me
     PVector impactspeed = touchingMe.speed.get();

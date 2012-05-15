@@ -8,6 +8,13 @@ class GenericEnemy extends CharacterRect {
     shootTowards(target.getCX(),target.getCY(),putBulletsHere);
   }
 }
+class NullEnemy extends GenericEnemy {
+  NullEnemy(PVector inpos, PVector inspeed) {
+    super(inpos,20,20,color(0,0,0,0),inspeed,240,400,loadImage("null.png")); //no need to supply height, width, color, mass, health, or image - these hardcoded.
+    myguns = new Gun[1];
+    myguns[0] = new Gun(10,  10,2  ,.01,        color(255,255,255),.35);
+  }
+}
 class Chaingunner extends GenericEnemy {
   Chaingunner(PVector inpos, PVector inspeed) {
     super(inpos,20,20,color(0,0,0,0),inspeed,240,400,loadImage("chaingunner.png")); //no need to supply height, width, color, mass, health, or image - these hardcoded.
@@ -26,7 +33,7 @@ class Blocker extends GenericEnemy {
   Blocker(PVector inpos,  PVector inspeed) {
     super(inpos,30,30,color(0,0,0,0),inspeed,200,800,loadImage("blocker.png"));
     myguns = new Gun[1];
-    myguns[0] = new Gun(100 ,24,80  ,0.196,color(255,0,5),1);
+    myguns[0] = new Gun(100 ,24,80  ,0.196,color(255,100,20),1);
   }
 }
 
