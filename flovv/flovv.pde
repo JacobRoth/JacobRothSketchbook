@@ -26,7 +26,7 @@ final int windowY = 600;
 FullScreen fs;
 PFont f;
 ArrayList<PVector> titleScreenPoints;
-final int maxTSPoints = 70;
+final int maxTSPoints = 50;
 
 int gamestate;
 WavesData wav;
@@ -67,11 +67,23 @@ void gamesetup() {
 }
 
 void titleScreen () {
+  background(0);
   if(titleScreenPoints.size()>maxTSPoints) {
     titleScreenPoints = new ArrayList<PVector>();
   }
-  background(0);
-  fill(0,0,255);
+  if(frameCount%30==0) {
+    titleScreenPoints.add(new PVector( random(0,windowX), random(0,windowY)));
+  }
+  for(PVector foo: titleScreenPoints) {
+    stroke(200);
+    //point(foo.x,foo.y);
+    for(PVector other: titleScreenPoints) {
+      if( sqrt(   (foo.x-other.x)*(foo.x-other.x) + (foo.y-other.y)*(foo.y-other.y)) < 200) { //dist formula
+        line(foo.x,foo.y,other.x,other.y);
+      }
+    }
+  }
+  fill(0,255,120);
   textFont(f, 48);
   text("f", 50, 100);
   text("l", 90, 100);
@@ -82,7 +94,7 @@ void titleScreen () {
   text("By Yanom", 100, 300);
   textFont(f, 36);
   text("Press B to start", 200, 350);
-  if (checkKey("b")) {
+  if (checkKey("B")) {
     gamesetup();
   }
 }
@@ -117,7 +129,7 @@ void gameCycle() {
   if(player.health <= 0) gameover = true;
   
   if(enemies.size() == 0) { //wave over!
-    wav.inject(enemies); //get a new wave for me
+    wav.update(enemies); //get a new wave for me
     player.refreshHealth();
   }
   

@@ -3,7 +3,9 @@ class WavesData {
   public WavesData() { //all the data's in the code here
     currentwave = 0;
   }
-  void inject(ArrayList enemys) {
+  void update(ArrayList enemys) {
+    if(enemys.size() != 0) return; //just stop the function now.
+    
     int enemySize = 20; //max size
     float enemyTopSpeed = 10;
     for(int iii=0;iii<=currentwave;iii++) {

@@ -28,8 +28,9 @@ class Gun { //shoots little green squares.
                       
     effect.normalize();
     effect.mult(projectilespeed);
+    effect.mult(random(.85,1.15));
         
-    return effect.get();
+    return effect;
   }
   PVector advShot(PhysicsRect theShooter, float destX, float destY) { 
     PVector newV = computeShot(theShooter,destX,destY);

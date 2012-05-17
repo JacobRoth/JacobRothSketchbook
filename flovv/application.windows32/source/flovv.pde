@@ -25,7 +25,11 @@ final int windowY = 600;
 
 FullScreen fs;
 PFont f;
+ArrayList<PVector> titleScreenPoints;
+final int maxTSPoints = 50;
+
 int gamestate;
+WavesData wav;
 
 Player player;
 CharacterRect testchar;
@@ -38,6 +42,7 @@ void setup() {
   gamestate = 0; //titleScreen
   f = loadFont("AgencyFB-Reg-48.vlw");
   textFont(f,26);
+  titleScreenPoints = new ArrayList<PVector>();
   size(windowX,windowY,OPENGL);
   frameRate(60);
   
@@ -54,6 +59,7 @@ void gamesetup() {
   frameCount = 0;
   gamestate = 1; //running
   player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),300);
+  wav = new WavesData();
   enemies = new ArrayList<GenericEnemy>();
   playersBullets = new ArrayList<PhysicsRect>();
   enemiesBullets = new ArrayList<PhysicsRect>();
@@ -62,7 +68,22 @@ void gamesetup() {
 
 void titleScreen () {
   background(0);
-  fill(0,0,255);
+  if(titleScreenPoints.size()>maxTSPoints) {
+    titleScreenPoints = new ArrayList<PVector>();
+  }
+  if(frameCount%30==0) {
+    titleScreenPoints.add(new PVector( random(0,windowX), random(0,windowY)));
+  }
+  for(PVector foo: titleScreenPoints) {
+    stroke(200);
+    //point(foo.x,foo.y);
+    for(PVector other: titleScreenPoints) {
+      if( sqrt(   (foo.x-other.x)*(foo.x-other.x) + (foo.y-other.y)*(foo.y-other.y)) < 200) { //dist formula
+        line(foo.x,foo.y,other.x,other.y);
+      }
+    }
+  }
+  fill(0,255,120);
   textFont(f, 48);
   text("f", 50, 100);
   text("l", 90, 100);
@@ -73,7 +94,7 @@ void titleScreen () {
   text("By Yanom", 100, 300);
   textFont(f, 36);
   text("Press B to start", 200, 350);
-  if (checkKey("b")) {
+  if (checkKey("B")) {
     gamesetup();
   }
 }
@@ -97,7 +118,7 @@ void gameCycle() {
   
   fill(255);
   text("Health: "+(int)player.health,0,590);
-  text(frameCount/60,770,590);
+  text("Wave: "+wav.currentwave,700,590);
   
   player.render();
   player.update();
@@ -107,19 +128,26 @@ void gameCycle() {
   player.handleOffSides(windowX,windowY,wallreduce);
   if(player.health <= 0) gameover = true;
   
-  if(frameCount%70==0) randInsertEnemy(enemies);
+  if(enemies.size() == 0) { //wave over!
+    wav.update(enemies); //get a new wave for me
+    player.refreshHealth();
+  }
   
   for(int iii=0;iii<playersBullets.size();iii++) {
     PhysicsRect foo = (PhysicsRect)playersBullets.get(iii);
     foo.render();
     foo.update();
     //foo.frictionate(globalfriction);    //we'll exempt the bullets from friction, partly for gameplay and partly to reduce lag from all that calc
-    if(foo.isOffSides(windowX,windowY)) playersBullets.remove(iii);
-    for(int jjj=0;jjj<enemies.size();jjj++) {
-      GenericEnemy e = (GenericEnemy)enemies.get(jjj);
-      if(e.rectCollision(foo)) {
-        e.takedamage(foo);
-        playersBullets.remove(iii);
+    if(foo.isOffSides(windowX,windowY)) {
+      playersBullets.remove(iii);
+    } else { //isn't off screen so check enemy collision
+      for(int jjj=0;jjj<enemies.size();jjj++) {
+        GenericEnemy e = (GenericEnemy)enemies.get(jjj);
+        if(e.rectCollision(foo)) {
+          e.takedamage(foo);
+          playersBullets.remove(iii);
+          break;
+        }
       }
     }
   }

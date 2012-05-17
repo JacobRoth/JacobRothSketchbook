@@ -168,7 +168,7 @@ class Player extends CharacterRect {
   Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
     super(inpos,inw,inh,incol,inspeed,inmass,1500,loadImage("player.png"));
     
-    thruster = new Gun(100 ,20,1  ,1.1781,color(255,255,255,150),.06); //thruster (3/8 PI spread)
+    thruster = new Gun(50 ,20,1  ,1.1781,color(200,200,200),.12); //thruster (3/8 PI spread)
     
     myguns = new Gun[4];
     myguns[0] = new Gun(250 ,12,50  ,0.3927,color(255,255,255,150),1); //shotgun (1/8 PI spread)

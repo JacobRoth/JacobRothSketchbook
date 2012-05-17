@@ -132,13 +132,15 @@ class PhysicsRect extends MotileRect {
 }
 class CharacterRect extends PhysicsRect {
   float health;
+  float maxhealth;
   PImage img;
   Gun[] myguns;
   int currentgun;
   CharacterRect(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass, float inhealth, PImage inimg) {
     super(inpos,inw,inh,incol,inspeed,inmass);
     img = inimg;
-    health = inhealth;                                 
+    health = inhealth;
+    maxhealth = inhealth;    
     myguns = new Gun[1];
     myguns[0] = new Gun(0,0,0,0,color(0,0,0),0); //placeholder weapon
     currentgun = 0;
@@ -149,6 +151,9 @@ class CharacterRect extends PhysicsRect {
   void render() {
     //super.render();
     image(img,pos.x,pos.y,w,h);
+  }
+  void refreshHealth() {
+    health = maxhealth;
   }
   void takedamage(PhysicsRect touchingMe) { //precondition - touchingMe has been indeed confirmed to be touching me
     PVector impactspeed = touchingMe.speed.get();
@@ -163,11 +168,11 @@ class Player extends CharacterRect {
   Player(PVector inpos, int inw, int inh, color incol, PVector inspeed, float inmass) {
     super(inpos,inw,inh,incol,inspeed,inmass,1500,loadImage("player.png"));
     
-    thruster = new Gun(100 ,20,1  ,1.1781,color(255,255,255,150),.06); //thruster (3/8 PI spread)
+    thruster = new Gun(50 ,20,1  ,1.1781,color(200,200,200),.12); //thruster (3/8 PI spread)
     
     myguns = new Gun[4];
     myguns[0] = new Gun(250 ,12,50  ,0.3927,color(255,255,255,150),1); //shotgun (1/8 PI spread)
-    myguns[1] = new Gun(20  ,17,200,.01,       color(255,255,255),3);  //bolt
+    myguns[1] = new Gun(40  ,37,200,.01,        color(255,255,255),1);  //bolt
     myguns[2] = new Gun(5000,9 ,400,PI,    color(255,255,255),1);  //360 radial cannon
     myguns[3] = new Gun(10,  20,2  ,.01,        color(255,255,255),.35); //chaingun
   }
