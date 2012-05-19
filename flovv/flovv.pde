@@ -11,8 +11,6 @@ use the mouse to aim your character, then right click on the game screen to use 
 final float globalfriction = 1;
 final float wallreduce = .4;
 final String[] playerWepKeys = {"1","2","3","4"};
-final String thrustKey = "W";
-final String gunKey = "Q";
 /*-----END CONFIG*/
 
 
@@ -100,9 +98,10 @@ void titleScreen () {
 }
 
 void gameCycle() {
-  if (checkKey(gunKey) || (mousePressed  && mouseButton == LEFT)) {
+  if (mousePressed  && mouseButton == LEFT) {
     player.shootTowards(mouseX,mouseY,playersBullets);
-  } else if (checkKey(thrustKey) || (mousePressed  && mouseButton == RIGHT)) {
+  } 
+  if (mousePressed  && mouseButton == RIGHT) {
     player.thrustTowards(mouseX,mouseY,playersBullets);
   }
   
