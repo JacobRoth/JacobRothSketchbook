@@ -1,3 +1,5 @@
+import processing.opengl.*;
+
 /*I dreamed up the following system:
 
 >>There is a threatmap that threat markers can be dropped on.
@@ -11,9 +13,9 @@
 
 If a unit gets shot by the enemy drop a threat marker.
 */
-final int numUnits = 30; //must be greater than 1. must always be 2+ units on screen or will crash.
-final int windowX = 640;
-final int windowY = 480;
+final int numUnits = 3000; //must be greater than 1. must always be 2+ units on screen or will crash.
+final int windowX = 1024;
+final int windowY = 768;
 ArrayList<Unit> myUnits;
 
 class Unit {
@@ -35,13 +37,21 @@ class Unit {
     point(dest.x,dest.y);
     stroke(255);
     point(pos.x,pos.y);
+    if(isLeader) {
+      stroke(0,0,255);
+      noFill();
+      ellipse(pos.x,pos.y,3,3);
+    }
   }
   void update(ArrayList<Unit> unitslive) {
     render();
     PVector mov = new PVector(dest.x-pos.x,dest.y-pos.y);
     mov.normalize();
     pos.add(mov);
-    dest = findNearest(unitslive).dest.get();
+    if(isLeader && (int)(pos.x-dest.x) == 0 && (int)(pos.y-dest.y) == 0) {
+      isLeader = false;
+    }
+    dest = findNearestLeader(unitslive).dest.get();
   }
   Unit findNearest(ArrayList<Unit> seek) {
     double currdist = 9999999.9;
@@ -53,21 +63,40 @@ class Unit {
         retme = iii;
       }
     }
-    
     return seek.get(retme);
-  }    
+  }
+  Unit findNearestLeader(ArrayList<Unit> seek) {
+    if(isLeader)
+      return this;
+    double currdist = 9999999.9;
+    Unit retme = this;
+    for(int iii=0;iii<seek.size();iii++) {
+      Unit foo = (Unit)seek.get(iii);
+      if( (pos.x-foo.pos.x)*(pos.x-foo.pos.x) + (pos.y-foo.pos.y)*(pos.y-foo.pos.y)  < currdist*currdist && foo.isLeader) {
+        currdist = sqrt( (pos.x-foo.pos.x)*(pos.x-foo.pos.x) + (pos.y-foo.pos.y)*(pos.y-foo.pos.y) );
+        retme = seek.get(iii);
+      }
+    }
+    return retme;
+  }   
 }
 void mouseClicked() {
-  for(Unit foo: myUnits) {
-    foo.dest = new PVector(mouseX,mouseY);
+  fill(255);
+  ellipse(mouseX,mouseY,30,30);
+  
+  int pickedunit = (int)random(0,myUnits.size());
+  for (int iii=0; (myUnits.get(pickedunit).isLeader)&&iii<myUnits.size();iii++) { //this wacky for loop SHOULD have the effect of making sure we only do as many attemts as there are units
+    pickedunit = (int)random(0,myUnits.size()); //try again
   }
+  myUnits.get(pickedunit).dest = new PVector(mouseX,mouseY);
+  myUnits.get(pickedunit).isLeader = true;
 }
 void addUnitToGame() {
   PVector loc = new PVector((int)(random(0,windowX)),(int)(random(0,windowY)));
   myUnits.add(new Unit(loc,loc));
 }
 void setup() {
-  size(windowX,windowY);
+  size(windowX,windowY,OPENGL);
   myUnits = new ArrayList<Unit>();
   for(int iii=0;iii<numUnits;iii++) {
     addUnitToGame();

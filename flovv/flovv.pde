@@ -8,9 +8,10 @@ use the mouse to aim your character, then right click on the game screen to use 
 
 ----------END DESCRIPTION*/
 /*CONFIG------*/
-final float globalfriction = 1;
+final float globalfriction = 1; //1 = no friction; 0 = complete friction (no movement of objects)
 final float wallreduce = .4;
 final String[] playerWepKeys = {"1","2","3","4"};
+final String[] playerMoveKeys = {"W","A","S","D"}; //in the format {Up, Left, Down, Right};
 /*-----END CONFIG*/
 
 
@@ -103,6 +104,17 @@ void gameCycle() {
   } 
   if (mousePressed  && mouseButton == RIGHT) {
     player.thrustTowards(mouseX,mouseY,playersBullets);
+  } else { //key movement = {Up, Left, Down, Right};
+    if(checkKey(playerMoveKeys[0])) //up
+      player.thrustTowards(player.getCX(),player.getCY()+1,playersBullets); 
+    else if(checkKey(playerMoveKeys[2])) //down
+      player.thrustTowards(player.getCX(),player.getCY()-1,playersBullets); 
+      
+      
+    if(checkKey(playerMoveKeys[1])) //left
+      player.thrustTowards(player.getCX()+1,player.getCY(),playersBullets); 
+    else if(checkKey(playerMoveKeys[3])) //right
+      player.thrustTowards(player.getCX()-1,player.getCY(),playersBullets); 
   }
   
   boolean gameover = false;
