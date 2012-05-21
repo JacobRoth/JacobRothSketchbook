@@ -31,11 +31,10 @@ use the mouse to aim your character, then right click on the game screen to use 
 
 ----------END DESCRIPTION*/
 /*CONFIG------*/
-final float globalfriction = 1;
+final float globalfriction = 1; //1 = no friction; 0 = complete friction (no movement of objects)
 final float wallreduce = .4f;
 final String[] playerWepKeys = {"1","2","3","4"};
-final String thrustKey = "W";
-final String gunKey = "Q";
+final String[] playerMoveKeys = {"W","A","S","D"}; //in the format {Up, Left, Down, Right};
 /*-----END CONFIG*/
 
 
@@ -48,7 +47,11 @@ final int windowY = 600;
 
 FullScreen fs;
 PFont f;
+ArrayList<PVector> titleScreenPoints;
+final int maxTSPoints = 50;
+
 int gamestate;
+WavesData wav;
 
 Player player;
 CharacterRect testchar;
@@ -61,6 +64,7 @@ public void setup() {
   gamestate = 0; //titleScreen
   f = loadFont("AgencyFB-Reg-48.vlw");
   textFont(f,26);
+  titleScreenPoints = new ArrayList<PVector>();
   size(windowX,windowY,OPENGL);
   frameRate(60);
   
@@ -77,6 +81,7 @@ public void gamesetup() {
   frameCount = 0;
   gamestate = 1; //running
   player = new Player(new PVector(200,200),24,24,color(0,0,0,0),new PVector(0,0),300);
+  wav = new WavesData();
   enemies = new ArrayList<GenericEnemy>();
   playersBullets = new ArrayList<PhysicsRect>();
   enemiesBullets = new ArrayList<PhysicsRect>();
@@ -85,7 +90,22 @@ public void gamesetup() {
 
 public void titleScreen () {
   background(0);
-  fill(0,0,255);
+  if(titleScreenPoints.size()>maxTSPoints) {
+    titleScreenPoints = new ArrayList<PVector>();
+  }
+  if(frameCount%30==0) {
+    titleScreenPoints.add(new PVector( random(0,windowX), random(0,windowY)));
+  }
+  for(PVector foo: titleScreenPoints) {
+    stroke(200);
+    //point(foo.x,foo.y);
+    for(PVector other: titleScreenPoints) {
+      if( sqrt(   (foo.x-other.x)*(foo.x-other.x) + (foo.y-other.y)*(foo.y-other.y)) < 200) { //dist formula
+        line(foo.x,foo.y,other.x,other.y);
+      }
+    }
+  }
+  fill(0,255,120);
   textFont(f, 48);
   text("f", 50, 100);
   text("l", 90, 100);
@@ -96,16 +116,36 @@ public void titleScreen () {
   text("By Yanom", 100, 300);
   textFont(f, 36);
   text("Press B to start", 200, 350);
-  if (checkKey("b")) {
+  if (checkKey("B")) {
     gamesetup();
   }
 }
 
 public void gameCycle() {
-  if (checkKey(gunKey) || (mousePressed  && mouseButton == LEFT)) {
+  if (mousePressed  && mouseButton == LEFT) {
     player.shootTowards(mouseX,mouseY,playersBullets);
-  } else if (checkKey(thrustKey) || (mousePressed  && mouseButton == RIGHT)) {
-    player.thrustTowards(mouseX,mouseY,playersBullets);
+  } 
+  //if (mousePressed  && mouseButton == RIGHT) {
+  //  player.thrustTowards(mouseX,mouseY,playersBullets);
+  //}
+  
+  boolean keyUp = checkKey(playerMoveKeys[0]);
+  boolean keyDown = checkKey(playerMoveKeys[2]);
+  boolean keyLeft = checkKey(playerMoveKeys[1]);
+  boolean keyRight = checkKey(playerMoveKeys[3]);
+  if(keyUp || keyDown || keyLeft || keyRight) {
+    int xmod = 0;
+    int ymod = 0;
+    
+    if(keyUp)  
+      ymod = 1; 
+    else if(keyDown) 
+      ymod = -1;
+    if(keyLeft) //left
+      xmod = 1;
+    else if(keyRight) //right
+      xmod = -1;
+    player.thrustTowards(player.getCX()+xmod,player.getCY()+ymod,playersBullets); 
   }
   
   boolean gameover = false;
@@ -120,7 +160,7 @@ public void gameCycle() {
   
   fill(255);
   text("Health: "+(int)player.health,0,590);
-  text(frameCount/60,770,590);
+  text("Wave: "+wav.currentwave,700,590);
   
   player.render();
   player.update();
@@ -130,19 +170,26 @@ public void gameCycle() {
   player.handleOffSides(windowX,windowY,wallreduce);
   if(player.health <= 0) gameover = true;
   
-  if(frameCount%70==0) randInsertEnemy(enemies);
+  if(enemies.size() == 0) { //wave over!
+    wav.update(enemies); //get a new wave for me
+    player.refreshHealth();
+  }
   
   for(int iii=0;iii<playersBullets.size();iii++) {
     PhysicsRect foo = (PhysicsRect)playersBullets.get(iii);
     foo.render();
     foo.update();
     //foo.frictionate(globalfriction);    //we'll exempt the bullets from friction, partly for gameplay and partly to reduce lag from all that calc
-    if(foo.isOffSides(windowX,windowY)) playersBullets.remove(iii);
-    for(int jjj=0;jjj<enemies.size();jjj++) {
-      GenericEnemy e = (GenericEnemy)enemies.get(jjj);
-      if(e.rectCollision(foo)) {
-        e.takedamage(foo);
-        playersBullets.remove(iii);
+    if(foo.isOffSides(windowX,windowY)) {
+      playersBullets.remove(iii);
+    } else { //isn't off screen so check enemy collision
+      for(int jjj=0;jjj<enemies.size();jjj++) {
+        GenericEnemy e = (GenericEnemy)enemies.get(jjj);
+        if(e.rectCollision(foo)) {
+          e.takedamage(foo);
+          playersBullets.remove(iii);
+          break;
+        }
       }
     }
   }
@@ -209,8 +256,9 @@ class Gun { //shoots little green squares.
                       
     effect.normalize();
     effect.mult(projectilespeed);
+    effect.mult(random(.85f,1.15f));
         
-    return effect.get();
+    return effect;
   }
   public PVector advShot(PhysicsRect theShooter, float destX, float destY) { 
     PVector newV = computeShot(theShooter,destX,destY);
@@ -368,13 +416,15 @@ class PhysicsRect extends MotileRect {
 }
 class CharacterRect extends PhysicsRect {
   float health;
+  float maxhealth;
   PImage img;
   Gun[] myguns;
   int currentgun;
   CharacterRect(PVector inpos, int inw, int inh, int incol, PVector inspeed, float inmass, float inhealth, PImage inimg) {
     super(inpos,inw,inh,incol,inspeed,inmass);
     img = inimg;
-    health = inhealth;                                 
+    health = inhealth;
+    maxhealth = inhealth;    
     myguns = new Gun[1];
     myguns[0] = new Gun(0,0,0,0,color(0,0,0),0); //placeholder weapon
     currentgun = 0;
@@ -385,6 +435,9 @@ class CharacterRect extends PhysicsRect {
   public void render() {
     //super.render();
     image(img,pos.x,pos.y,w,h);
+  }
+  public void refreshHealth() {
+    health = maxhealth;
   }
   public void takedamage(PhysicsRect touchingMe) { //precondition - touchingMe has been indeed confirmed to be touching me
     PVector impactspeed = touchingMe.speed.get();
@@ -399,11 +452,11 @@ class Player extends CharacterRect {
   Player(PVector inpos, int inw, int inh, int incol, PVector inspeed, float inmass) {
     super(inpos,inw,inh,incol,inspeed,inmass,1500,loadImage("player.png"));
     
-    thruster = new Gun(100 ,20,1  ,1.1781f,color(255,255,255,150),.06f); //thruster (3/8 PI spread)
+    thruster = new Gun(50 ,20,1  ,1.1781f,color(200,200,200),.12f); //thruster (3/8 PI spread)
     
     myguns = new Gun[4];
     myguns[0] = new Gun(250 ,12,50  ,0.3927f,color(255,255,255,150),1); //shotgun (1/8 PI spread)
-    myguns[1] = new Gun(20  ,17,200,.01f,       color(255,255,255),3);  //bolt
+    myguns[1] = new Gun(40  ,37,100,.01f,        color(255,255,255),1);  //bolt
     myguns[2] = new Gun(5000,9 ,400,PI,    color(255,255,255),1);  //360 radial cannon
     myguns[3] = new Gun(10,  20,2  ,.01f,        color(255,255,255),.35f); //chaingun
   }
@@ -417,6 +470,57 @@ class Player extends CharacterRect {
     thruster.fire(this,Xloc,Yloc,putbulletshere);
   }
 }
+class WavesData {
+  int currentwave;
+  public WavesData() { //all the data's in the code here
+    currentwave = 0;
+  }
+  public void update(ArrayList enemys) {
+    //if(enemys.size() != 0) return; //just stop the function now.
+    
+    int enemySize = 20; //max size
+    float enemyTopSpeed = 10;
+    for(int iii=0;iii<=currentwave;iii++) {
+      int screenedge = (int)(random(0,4));
+      int posx = 0;
+      int posy = 0;
+      float speedx = 0;
+      float speedy = 0;
+      if (screenedge == 0) { //the left edge
+        posx = 1;
+        posy = (int)(random(0,windowY-enemySize));
+        speedx = random(0,enemyTopSpeed);
+        speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
+      } else if (screenedge == 1) { //the right edge
+        posx = windowX-enemySize;
+        posy = (int)(random(0,windowY-enemySize));
+        speedx = random(-1*enemyTopSpeed,0);
+        speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
+      } else if (screenedge == 2) { //the top
+        posx = (int)(random(0,windowX-enemySize));
+        posy = 0;
+        speedx = random(-1*enemyTopSpeed, enemyTopSpeed);  
+        speedy = random(0,enemyTopSpeed);
+      } else if (screenedge == 3) { //the bottom
+        posx = (int)(random(0,windowX-enemySize));
+        posy = windowY-enemySize;
+        speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
+        speedy = random(-1*enemyTopSpeed,0);
+      }
+      PVector pos = new PVector(posx,posy);
+      PVector speed = new PVector(speedx,speedy);
+      if((float)iii/currentwave<.10f) {
+        enemys.add(new Sniper(pos,speed));
+      } else if((float)iii/currentwave<.20f) {
+        enemys.add(new Blocker(pos,speed));
+      } else {
+        enemys.add(new Chaingunner(pos,speed));
+      }        
+    }
+    currentwave++;
+  }
+}
+
 class GenericEnemy extends CharacterRect {
   GenericEnemy(PVector inpos, int inw, int inh, int incol, PVector inspeed, float inmass, float inhealth, PImage inimg) { //FROM HERE ON OUT, defining attribuites such as guns, health, and images in the class, not making them constructor options.
     super(inpos,inw,inh,incol,inspeed,inmass,inhealth,inimg);
@@ -427,11 +531,18 @@ class GenericEnemy extends CharacterRect {
     shootTowards(target.getCX(),target.getCY(),putBulletsHere);
   }
 }
+class NullEnemy extends GenericEnemy {
+  NullEnemy(PVector inpos, PVector inspeed) {
+    super(inpos,20,20,color(0,0,0,0),inspeed,240,400,loadImage("null.png")); //no need to supply height, width, color, mass, health, or image - these hardcoded.
+    myguns = new Gun[1];
+    myguns[0] = new Gun(10,  10,2  ,.01f,        color(255,255,255),.35f);
+  }
+}
 class Chaingunner extends GenericEnemy {
   Chaingunner(PVector inpos, PVector inspeed) {
     super(inpos,20,20,color(0,0,0,0),inspeed,240,400,loadImage("chaingunner.png")); //no need to supply height, width, color, mass, health, or image - these hardcoded.
     myguns = new Gun[1];
-    myguns[0] = new Gun(11,11,11,0,color(0,255,255),.1f); 
+    myguns[0] = new Gun(11,5,11,0,color(0,255,255),.4f); 
   }
 }
 class Sniper extends GenericEnemy {
@@ -441,43 +552,15 @@ class Sniper extends GenericEnemy {
     myguns[0] = new Gun(50,17,300,0,color(0,125,255),1); 
   }
 }
-
-
-public void randInsertEnemy(ArrayList enemys) { //needs fixing in terms of all the f****** variables in this function.
-  int enemySize = 20; //max size
-  float enemyTopSpeed = 10;
-  int screenedge = (int)(random(0,4));
-  int posx = 0;
-  int posy = 0;
-  float speedx = 0;
-  float speedy = 0;
-  if (screenedge == 0) { //the left edge
-    posx = 1;
-    posy = (int)(random(0,windowY-enemySize));
-    speedx = random(0,enemyTopSpeed);
-    speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
-  } else if (screenedge == 1) { //the right edge
-    posx = windowX-enemySize;
-    posy = (int)(random(0,windowY-enemySize));
-    speedx = random(-1*enemyTopSpeed,0);
-    speedy = random(-1*enemyTopSpeed,enemyTopSpeed);
-  } else if (screenedge == 2) { //the top
-    posx = (int)(random(0,windowX-enemySize));
-    posy = 0;
-    speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
-    speedy = random(0,enemyTopSpeed);
-  } else if (screenedge == 3) { //the bottom
-    posx = (int)(random(0,windowX-enemySize));
-    posy = windowY-enemySize;
-    speedx = random(-1*enemyTopSpeed, enemyTopSpeed);
-    speedy = random(-1*enemyTopSpeed,0);
+class Blocker extends GenericEnemy {
+  Blocker(PVector inpos,  PVector inspeed) {
+    super(inpos,30,30,color(0,0,0,0),inspeed,200,800,loadImage("blocker.png"));
+    myguns = new Gun[1];
+    myguns[0] = new Gun(100 ,24,80  ,0.196f,color(255,100,20),1);
   }
-  int enemytype = (int)(random(0,2));
-  if(enemytype == 0) 
-    enemys.add(new Sniper(new PVector(posx,posy),new PVector(speedx,speedy)));
-  else if(enemytype == 1)
-    enemys.add(new Chaingunner(new PVector(posx,posy),new PVector(speedx,speedy)));
 }
+
+
 
 boolean[] keys = new boolean[526];
 public boolean checkKey(String k) {

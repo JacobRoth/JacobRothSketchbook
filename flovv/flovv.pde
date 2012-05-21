@@ -102,19 +102,27 @@ void gameCycle() {
   if (mousePressed  && mouseButton == LEFT) {
     player.shootTowards(mouseX,mouseY,playersBullets);
   } 
-  if (mousePressed  && mouseButton == RIGHT) {
-    player.thrustTowards(mouseX,mouseY,playersBullets);
-  } else { //key movement = {Up, Left, Down, Right};
-    if(checkKey(playerMoveKeys[0])) //up
-      player.thrustTowards(player.getCX(),player.getCY()+1,playersBullets); 
-    else if(checkKey(playerMoveKeys[2])) //down
-      player.thrustTowards(player.getCX(),player.getCY()-1,playersBullets); 
-      
-      
-    if(checkKey(playerMoveKeys[1])) //left
-      player.thrustTowards(player.getCX()+1,player.getCY(),playersBullets); 
-    else if(checkKey(playerMoveKeys[3])) //right
-      player.thrustTowards(player.getCX()-1,player.getCY(),playersBullets); 
+  //if (mousePressed  && mouseButton == RIGHT) {
+  //  player.thrustTowards(mouseX,mouseY,playersBullets);
+  //}
+  
+  boolean keyUp = checkKey(playerMoveKeys[0]);
+  boolean keyDown = checkKey(playerMoveKeys[2]);
+  boolean keyLeft = checkKey(playerMoveKeys[1]);
+  boolean keyRight = checkKey(playerMoveKeys[3]);
+  if(keyUp || keyDown || keyLeft || keyRight) {
+    int xmod = 0;
+    int ymod = 0;
+    
+    if(keyUp)  
+      ymod = 1; 
+    else if(keyDown) 
+      ymod = -1;
+    if(keyLeft) //left
+      xmod = 1;
+    else if(keyRight) //right
+      xmod = -1;
+    player.thrustTowards(player.getCX()+xmod,player.getCY()+ymod,playersBullets); 
   }
   
   boolean gameover = false;

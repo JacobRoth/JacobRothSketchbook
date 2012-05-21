@@ -8,11 +8,10 @@ use the mouse to aim your character, then right click on the game screen to use 
 
 ----------END DESCRIPTION*/
 /*CONFIG------*/
-final float globalfriction = 1;
+final float globalfriction = 1; //1 = no friction; 0 = complete friction (no movement of objects)
 final float wallreduce = .4;
 final String[] playerWepKeys = {"1","2","3","4"};
-final String thrustKey = "W";
-final String gunKey = "Q";
+final String[] playerMoveKeys = {"W","A","S","D"}; //in the format {Up, Left, Down, Right};
 /*-----END CONFIG*/
 
 
@@ -100,10 +99,30 @@ void titleScreen () {
 }
 
 void gameCycle() {
-  if (checkKey(gunKey) || (mousePressed  && mouseButton == LEFT)) {
+  if (mousePressed  && mouseButton == LEFT) {
     player.shootTowards(mouseX,mouseY,playersBullets);
-  } else if (checkKey(thrustKey) || (mousePressed  && mouseButton == RIGHT)) {
-    player.thrustTowards(mouseX,mouseY,playersBullets);
+  } 
+  //if (mousePressed  && mouseButton == RIGHT) {
+  //  player.thrustTowards(mouseX,mouseY,playersBullets);
+  //}
+  
+  boolean keyUp = checkKey(playerMoveKeys[0]);
+  boolean keyDown = checkKey(playerMoveKeys[2]);
+  boolean keyLeft = checkKey(playerMoveKeys[1]);
+  boolean keyRight = checkKey(playerMoveKeys[3]);
+  if(keyUp || keyDown || keyLeft || keyRight) {
+    int xmod = 0;
+    int ymod = 0;
+    
+    if(keyUp)  
+      ymod = 1; 
+    else if(keyDown) 
+      ymod = -1;
+    if(keyLeft) //left
+      xmod = 1;
+    else if(keyRight) //right
+      xmod = -1;
+    player.thrustTowards(player.getCX()+xmod,player.getCY()+ymod,playersBullets); 
   }
   
   boolean gameover = false;

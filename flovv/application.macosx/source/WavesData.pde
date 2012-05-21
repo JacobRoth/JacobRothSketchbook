@@ -4,7 +4,7 @@ class WavesData {
     currentwave = 0;
   }
   void update(ArrayList enemys) {
-    if(enemys.size() != 0) return; //just stop the function now.
+    //if(enemys.size() != 0) return; //just stop the function now.
     
     int enemySize = 20; //max size
     float enemyTopSpeed = 10;
