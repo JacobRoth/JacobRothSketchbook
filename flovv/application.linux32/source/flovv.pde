@@ -4,7 +4,10 @@ projectile inheritance and physically realistic recoil (on the shooter and the t
 bullet damage in floVV is calculated not based on weapon types or on arbitrary damage calculations, but on the actual kinetic force imparted by the bullet.
 your only means of movement in floVV is weapon recoil, with some "thruster" weapons intended entirely for this purpose.
 
-use the mouse to aim your character, then right click on the game screen to use your jets and left click to fire your weapons. number keys 1 thru 4 switch weapons.
+use WASD keys to move. Movement fires the "thruster" weapon. You can bouce off walls in this game, so bouce strategically
+use the mouse to aim your weapon, then left click to fire your weapons. number keys 1 thru 4 switch weapons.
+
+Enemies will arive in waves. Try to reach the highest wave you can. My record as the programmer is wave 10.
 
 ----------END DESCRIPTION*/
 /*CONFIG------*/
