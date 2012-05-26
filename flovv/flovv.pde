@@ -92,7 +92,7 @@ void titleScreen () {
   text("o", 140,100);
   text("V", 240,100);
   text("V", 350,100);
-  text("Beta!!111!!!!!111!",400,200);
+  //text("Beta!!111!!!!!111!",400,200);
   text("By Yanom", 100, 300);
   textFont(f, 36);
   text("Press B to start", 200, 350);
