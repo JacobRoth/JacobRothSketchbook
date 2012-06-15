@@ -120,14 +120,15 @@ class GravRect extends Rectangle {
     float dy = getCY() - target.pos.y;
     
     // the distance between the 2 objects 
-    float d = sqrt( dx * dx + dy * dy );
+    float dsquard = (dx*dx)+(dy*dy);
     
     // the acceleration - inversely proportional to the square of the distance
-    float acc = magnitude / ( d * d);
+    float acc = magnitude / ( dsquard  );
     // the direction angle
-    float sinAngle = dy / d;
-    float cosAngle = dx / d;
     
+    float d = sqrt( dsquard );
+        float sinAngle = dy / d;
+    float cosAngle = dx / d;
     
     // the acceleration on the x-axis
     float accX = acc * cosAngle;

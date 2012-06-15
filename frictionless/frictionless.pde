@@ -1,3 +1,5 @@
+import processing.opengl.*;
+
 /* GPL licenced */
 //[CONFIG]
 final int gravMag = 1000;
@@ -8,7 +10,7 @@ final int meteorSize = 15;
 final float meteorTopSpeed = 1;
 final int coronaStormIntensity = 1;
 final int backgroundBrightness = 100; //from 0 to 255
-final boolean useDynamicBackground = false;
+final boolean useDynamicBackground = true;
 //[/CONFIG]
 
 PlayerRect player;
@@ -23,7 +25,7 @@ boolean gamerunning = false;
 float backgroundNoise=0;
 
 void setup() { 
-  size(1024,768);
+  size(1024,768,OPENGL);
   frameRate(30);
   set_up_game();
   f = loadFont("TlwgTypist-48.vlw");
