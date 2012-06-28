@@ -114,4 +114,25 @@ class Oid {
   float getMass() {
     return rad*rad;
   }
+  void setMass(float input) {
+    rad = sqrt(input);
+  }
+  Oid findNearestOidToPoint(ArrayList<Oid> oidshere, PVector thispoint) {
+    /***
+      returns the nearest Oid in the oidshere ArrayList, or returns null if can't find any.
+      NEVER RETURNS MYSELF. returns null if it can't find anything other than itself.
+    ***/
+  
+    float nearestDist = (float)Integer.MAX_VALUE;
+    Oid returnme = null; //start out with variable empty
+    //if(oidshere.size() <= 0) returnme = this; //if there's nobody else out there, return myself.    
+    for(Oid thisoid: oidshere) {
+      float d = dist(thispoint.x,thispoint.y,thisoid.pos.x,thisoid.pos.y);
+      if(d < nearestDist && !(thisoid.equals(this))) {
+        returnme=thisoid;
+        nearestDist = d;
+      }
+    }
+    return returnme;
+  }
 }
