@@ -1,4 +1,4 @@
-import processing.opengl.*;
+//import processing.opengl.*;
 
 final int windowSize = 500;
 final boolean sourceDrift = true;
@@ -19,7 +19,7 @@ boolean gameRunning = false;
 boolean paused = false;
 
 void setup () {
-  size(screenHeight, screenHeight,OPENGL); //gotta put those numeric values, not vars, in or ExportApplet chokes.
+  size(windowSize, windowSize); //gotta put those numeric values, not vars, in or ExportApplet chokes.
   frameRate(30);
   f = loadFont("AgencyFB-Reg-48.vlw");
   setLayers();

@@ -1,0 +1,7 @@
+This shell script downloads and installs the Low-Disorientation Kiosk Environment on a clean minimal installation of Debian Stable. However, when you install the Debian stale (from CD , or netinst, or whatever), there are a couple things you need to do:
+
+-There needs to be an active user named "null" on the system. null is the username that LDKE sets itself up to auto-login too, and the one it runs all the software (pulseaudio, window manager/panel, browser, etc) as.
+
+-Make sure you set up a network mirror! The script needs to download some stuff using apt-get, and if there's no repositories set up it won't work.
+
+-Don't install the graphical desktop environment when you set up Debian stable. I have no idea if this script will still work if you have already set up the graphical enviroment; I haven't tested that yet. Set up a minimal installation.
