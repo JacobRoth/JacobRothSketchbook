@@ -1,4 +1,4 @@
-//import processing.opengl.*;
+import processing.opengl.*;
 
 final int windowSize = 500;
 final boolean sourceDrift = true;
@@ -12,14 +12,14 @@ Layer layer1;
 Layer layer2;
 Layer layer3;
 
-PFont f;  
+PFont f;
 
 boolean[] keys = new boolean[526];
 boolean gameRunning = false;
 boolean paused = false;
 
 void setup () {
-  size(windowSize, windowSize); //gotta put those numeric values, not vars, in or ExportApplet chokes.
+  size(screenHeight, screenHeight,OPENGL); //gotta put those numeric values, not vars, in or ExportApplet chokes.
   frameRate(30);
   f = loadFont("AgencyFB-Reg-48.vlw");
   setLayers();
@@ -27,11 +27,11 @@ void setup () {
 
 void setLayers() {
   layer1 = new Layer(1, 255, 0, 0, 1000); //red
-  layer2 = new Layer(2, 0, 255, 0, 1000);  //green
+  layer2 = new Layer(2, 0, 255, 0, 1000); //green
   /*there's currenty super-hackish code down in void runningCycle() {
-    that progressively makes the delay on the green layer (layer 2) get shorter and shorter. There's probably a more
-    elegant way to code difficulty progression, but I'm ok with this.
-  */
+that progressively makes the delay on the green layer (layer 2) get shorter and shorter. There's probably a more
+elegant way to code difficulty progression, but I'm ok with this.
+*/
   layer3 = new Layer(3, 0, 100, 255, 100); //blue
   
   
@@ -39,10 +39,10 @@ void setLayers() {
   secsCounter = new Trigger(1000);
 }
 
-void keyPressed() { 
+void keyPressed() {
   keys[keyCode] = true;
 }
-void keyReleased() { 
+void keyReleased() {
   keys[keyCode] = false;
 }
 boolean checkKey(String k) {
@@ -58,12 +58,12 @@ void draw() {
 
   if (gameRunning) {
     //if (paused) {
-    //  pauseCycle();
-    //} 
+    // pauseCycle();
+    //}
     //else {
     runningCycle();
     //}
-  } 
+  }
   else {
     offCycle();
   }
@@ -92,16 +92,16 @@ void offCycle() {
 }
 
 /*void pauseCycle() {
-  layer1.frozenCycle();
-  layer2.frozenCycle();
-  layer3.frozenCycle();
-  fill(255);
-  textFont(f, 48);
-  text("Paused", 100, 100);
-  textFont(f, 26);
-  text("Press U to unpause", 300, 400);
-  checkForPauseInput();
-  text(secsrunning, 400, 490);
+layer1.frozenCycle();
+layer2.frozenCycle();
+layer3.frozenCycle();
+fill(255);
+textFont(f, 48);
+text("Paused", 100, 100);
+textFont(f, 26);
+text("Press U to unpause", 300, 400);
+checkForPauseInput();
+text(secsrunning, 400, 490);
 }*/
 
 void runningCycle() {
@@ -132,7 +132,3 @@ void checkForPauseInput() {
     paused = false;
   }
 }
-
-
-
-
