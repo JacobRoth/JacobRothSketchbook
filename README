@@ -3,7 +3,7 @@ Jacob's computer projects - Low-Disorientation Kiosk Environment, Processing ske
 There are also two games in this repository that I'm quite proud of.
 
 First is fAdeHD, which is compiled as an applet, with the source code and executable .html found in the fAdeHD/fAdeHD-applet.zip archive.
-fAdeHD is an abstract minimalist projectile-dodging game inspired by the games of Kenta Cho, but with a twist - you are playing three instances of the game at once, with the same controls, at different speeds. The controls are simple - use the WASD keys to move the player "ship" (the square inside a circle), avoiding the projectiles emanating from the center of the screen. You are controlling three ship in the colors Red, Green, and Blue simultaneously, but each moves at a different speed. Each ship is only affected by projectiles of its own color, passing through all others. If any ship touches a same-colored projectile, you lose.
+fAdeHD is an abstract minimalist projectile-dodging game inspired by the games of Kenta Cho, but with a twist - you are playing three instances of the game at once, with the same controls, at different speeds. The controls are simple - use the WASD keys to move the player "ship" (the square inside a circle), avoiding the projectiles emanating from the center of the screen. You are controlling three ships in the colors Red, Green, and Blue simultaneously, but each moves at a different speed. Each ship is only affected by projectiles of its own color, passing through all others. If any ship touches a same-colored projectile, you lose.
 I have never seen anyone last more than two minutes at this game without losing.
 
 flovv was my next project, and it's a bit more complicated.
