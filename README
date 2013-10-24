@@ -1,1 +1,13 @@
 Jacob's computer projects - Low-Disorientation Kiosk Environment, Processing sketches, and more.
+
+There are also two games in this repository that I'm quite proud of.
+
+First is fAdeHD, which is compiled as an applet, with the source code and executable .html found in the fAdeHD/fAdeHD-applet.zip archive.
+fAdeHD is an abstract minimalist projectile-dodging game inspired by the games of Kenta Cho, but with a twist - you are playing three instances of the game at once, with the same controls, at different speeds. The controls are simple - use the WASD keys to move the player "ship" (the square inside a circle), avoiding the projectiles emmanating from the center of the screen. You are controlling three ship in the colors Red, Green, and Blue simultaneously, but each moves at a different speed. Each ship is only affected by projectiles of its own color, passing through all others. If any ship touches a same-colored projectile, you lose.
+I have never seen anyone last more than two minutes at this game without losing.
+
+flovv was my next project, and it's a bit more complicated.
+It is compiled as stand-alone programs, and can be found as zip-files containing source and binary for various OS's under the flovv/ directory (ex. flovv/application.windows32.zip).
+flovv is a physics-based top-down arena shooter somewhat in the vein of twin-stick shooters like Geometry Wars. It revolves around the concept of particle effects as video game weapons. The player ship (the one with the tilde character) moves about the screen by firing particle jets with the WASD keys. Particle jets are also fired as weapons in four different modes selected by the 1,2,3, and 4 keys (Sparse Burst, Concentrated Burst, Omnidirectional Burst, and Continuous Stream, respectively). Firing a weapon produces a Newtonian equal and opposite reaction, exerting impulse on  you. Enemies will chase you around the screen, firing their own weapons, and you must use your particle weapons (or particle jet exhaust) to take them out. Damage is based on particle momentum relative to the target, so a high closure rate prior to firing will result in the best effects. The edge of the screen is bouncy.
+
+Both of these games were hits at my high school! Have fun!
