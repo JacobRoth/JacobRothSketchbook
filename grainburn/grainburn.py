@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
+import random
+import math
 
 def convertDown(image):
     rows,columns,_ = image.shape
@@ -8,46 +10,47 @@ def convertDown(image):
     for row in range(0,rows-1):
         for column in range(0,columns-1):
             if image[row][column].all()==0:
-                bufferedImage[row][column] = 0
+                bufferedImage[row][column] = 0 # fuel
             else:
-                bufferedImage[row][column] = 1
-            
-
-    
-
+                bufferedImage[row][column] = 1 # chamber
+                
     return np.copy(bufferedImage)
 
+def scopeGrain():
+    for row in range(0,rows-1):
+            for column in range(0,columns-1):
+                if fuelgrain[row][column] == 1: # we found chamber!
+                    pass
+                else:
+                    pass
+                    '''# we're analyzing fuel
+                    #let's analyze this for the nearest None (chamber) pixel
+                    distanceToChamber = 10000000000000 # arbitrarily large
+                    for rrr in range(0,rows-1):
+                        for ccc in range(0,columns-1):
+                            if fuelgrain[rrr][ccc] is None:
+                                sqrtMe = (ccc-column)*(ccc-column) + (rrr-row)*(rrr-row)
+                                distanceCurrent = math.sqrt( sqrtMe)
+                                if distanceCurrent < distanceToChamber:
+                                    distanceToChamber = distanceCurrent
+                    fuelgrain[row][column] = distanceToChamber'''
 
-def burnOneLayer(image):
-    numburned=0
-    rows,columns = image.shape
-    bufferedImage=np.copy(image)
 
-    for row in range(1,rows-2): # we're not going to burn the edges
-        for column in range(1,columns-2):
-            if image[row][column]==0:
-                #it's fuel
-                if image[row-1][column]==1 or image[row+1][column]==1 or image[row][column-1]==1 or image[row][column+1]==1:
-
-#or image[row-1][column-1]==1 or image[row-1][column+1]==1 or image[row+1][column-1]==1 or image[row+1][column+1]==1: # there is a nitrous touching it
-                    bufferedImage[row][column]=1 #will become nitrous when image is copied over
-                    numburned = numburned+1
-#                    print("ZOMG burned one")
-    return np.copy(bufferedImage),numburned
-
-    #von Rossum be praised for the Python garbage collector
+def main():
+    global fuelgrain
+    fuelgrain = convertDown(mpimg.imread('samplegrain.png'))
+    global rows,columns
+    rows,columns = fuelgrain.shape
     
+    #scopeGrain()
 
+    fig,ax = plt.subplots()
+    imgplot = plt.imshow(fuelgrain)
 
-fuelgrain =convertDown(mpimg.imread('samplegrain.png'))
-for i in range(0,40):
-    fuelgrain,n = burnOneLayer(fuelgrain)
-    print(n)
+    plt.show()
 
-fig,ax = plt.subplots()
-imgplot = plt.imshow(fuelgrain)
-
-plt.show()
+if __name__=="__main__":
+    main()
 
 #x = input(">")
 
