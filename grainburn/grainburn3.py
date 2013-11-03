@@ -7,6 +7,7 @@ import matplotlib.animation as animation
 import matplotlib.image as mpimg
 import numpy as np
 import math
+import sys
 
 def convertDown(image): # do not use on grayscale image
     rows,columns,_ = image.shape
@@ -109,7 +110,7 @@ def main():
     
     pointsList = [] # indexed as row,column (backwards) because that's how MATPLOTLIB rolls
 
-    fuelgrain = mpimg.imread('cylindrical.png')
+    fuelgrain = mpimg.imread(sys.argv[0])
     colorAllInvalidsGrey(fuelgrain)
     
     size,scratch = fuelgrain.shape
