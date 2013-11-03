@@ -124,7 +124,7 @@ def main():
     thrustCurve = []
     animationImageList = []
     
-    regression = 40
+    regression = int(sys.argv[1])
     for iteration in range(0,regression):
         print(iteration)
         thrustCurve.append(countSurfaceArea(fuelgrain))
