@@ -110,7 +110,7 @@ def main():
     
     pointsList = [] # indexed as row,column (backwards) because that's how MATPLOTLIB rolls
 
-    fuelgrain = mpimg.imread(sys.argv[0])
+    fuelgrain = mpimg.imread(sys.argv[1])
     colorAllInvalidsGrey(fuelgrain)
     
     size,scratch = fuelgrain.shape
@@ -124,7 +124,7 @@ def main():
     thrustCurve = []
     animationImageList = []
     
-    regression = int(sys.argv[1])
+    regression = int(sys.argv[2])
     for iteration in range(0,regression):
         print(iteration)
         thrustCurve.append(countSurfaceArea(fuelgrain))
