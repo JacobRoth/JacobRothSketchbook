@@ -19,6 +19,7 @@ def convertDown(image): # do not use on grayscale image
 
 class Fuelgrain:
     image = None #1 is nitrous, 0 is fuel, and the edges are all colored .5
+    validityMask = None
     pointsList = [] # indexed as row,column (backwards) because that's how MATPLOTLIB rolls
     
     thrustCurve = [] 
@@ -33,13 +34,30 @@ class Fuelgrain:
             print("please have image width equal image height exactly")
             return "err - nonsquare image"
         else:
+            self.prepValidityMask()
             self.colorAllInvalidsGrey()
             self.populatePointsList()
+
+    def prepValidityMask(self):
+        if self.image == None:
+            print("error error - must have the image initialized before prepping the validity mask")
+            return "error"
+        else: #all is well
+            self.validityMask = np.copy(self.image)
+            rows,columns = self.image.shape
+            radius = (rows/2)-1
+            rsquared = radius*radius
+            for row in range(0,rows):
+                for column in range(0,columns):
+                    
+                    self.validityMask[row][column] =  ((row-radius)**2 + (column-radius)**2 <= rsquared)
+                    
+        
         
     
     
     def isPointValid(self,pointTuple):
-        if pointTuple[0] < 0 or pointTuple[1] < 0:
+        '''if pointTuple[0] < 0 or pointTuple[1] < 0:
             return False
         if pointTuple[0] >= self.image.shape[0] or pointTuple[1] >= self.image.shape[1]:
             return False
@@ -50,7 +68,11 @@ class Fuelgrain:
         if (pointTuple[0]-radius)**2 + (pointTuple[1]-radius)**2 > rsquared:
             return False
         else:
-            return True
+            return True ''' # that was the old code, now it uses validity mask
+
+        return self.validityMask[pointTuple[0]][pointTuple[1]]
+        
+        
 
     def colorAllInvalidsGrey(self):
         rows,columns = self.image.shape
@@ -117,6 +139,7 @@ class Fuelgrain:
                         self.image[row][column] = 1 # make it nitrous
 
     def regressMe(self,regression):
+        self.thrustCurve.append(0) # starts at 0 thrust
         for iteration in range(0,regression):
             print(iteration)
             self.thrustCurve.append(self.countSurfaceArea())
@@ -130,9 +153,9 @@ class Fuelgrain:
 
 def main():
     # i feel like i should rewrite this whole rendering code to be OO (under class Fuelgrain), but this works as-is and is clean
-    
+    global fuelgrain
     fuelgrain = Fuelgrain("cylindrical.png")
-    fuelgrain.regressMe(10)
+    fuelgrain.regressMe(30)
 
     fig=plt.figure()
     imgplot=plt.imshow(fuelgrain.image)
