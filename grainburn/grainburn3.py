@@ -144,9 +144,12 @@ def main():
         imgplot.set_array(animationImageList[j])
         return imgplot,
     
-    ani = animation.FuncAnimation(fig,updatefig,frames=range(len(animationImageList)),interval=50,blit=True)
+    ani = animation.FuncAnimation(fig,updatefig,frames=range(len(animationImageList)),interval=90,repeat_delay=200,blit=True)
 
-    #plt.plot(thrustCurve)
+    
+    plt.show()
+    plt.clf()
+    plt.plot(thrustCurve)
     plt.show()
 
 if __name__ == "__main__":
