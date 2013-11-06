@@ -138,24 +138,30 @@ class Fuelgrain:
                     if self.isPointValid((row,column)):
                         self.image[row][column] = 1 # make it nitrous
 
-    def regressMe(self,regression):
+    def regress(self,regression,plist=None):
+        if plist == None:
+            plist = self.pointsList # if no list of reg points was passed in 
         self.thrustCurve.append(0) # starts at 0 thrust
         for iteration in range(0,regression):
             print(iteration)
             self.thrustCurve.append(self.countSurfaceArea())
             self.animationImageList.append(np.copy(self.image))
-            for myTuple in self.pointsList:
+            for myTuple in plist:
                 self.drawCircleOnGrain(myTuple,iteration)
         self.thrustCurve.append(0) # this is done to make sure the resulting graph
                                    # scales from 0 on the y-axis. you could also say
                                    # it represents thrust at oxidizer depletion.
+
+    def regressMT(self,regression,numThreads):
+        pass # gotta code this in later
+        #apparently you can break a list like this: nestedlist = [mylist[start:start + 20] for start in range(0, len(mylist), 20)]
                                    
 
 def main():
     # i feel like i should rewrite this whole rendering code to be OO (under class Fuelgrain), but this works as-is and is clean
     global fuelgrain
     fuelgrain = Fuelgrain("cylindrical.png")
-    fuelgrain.regressMe(30)
+    fuelgrain.regress(30)
 
     fig=plt.figure()
     imgplot=plt.imshow(fuelgrain.image)
