@@ -7,6 +7,8 @@ import matplotlib.image as mpimg
 import numpy as np
 import math
 import sys
+import threading
+#import _thread as thread #python2-style threading, less "correct" but more usable
 
 def convertDown(image): # do not use on grayscale image
     rows,columns,_ = image.shape
@@ -16,6 +18,22 @@ def convertDown(image): # do not use on grayscale image
             bufferedImage[row][column]=image[row][column].any() # returns TRUE if any values are not equal to zero, IE, square is not true black
                 
     return np.copy(bufferedImage)
+
+def splitList(myList,numSubLists): #may be slightly off even
+    returnList = []
+    bisectionPoints  = [ 0 ] # starts out with a zero in there
+    distApart = int(len(myList)/numSubLists)
+
+    for iii in range(0,numSubLists-1): # need this to loop numSubLists-1 times
+        bisectionPoints.append( bisectionPoints[len(bisectionPoints)-1] + distApart )
+
+    bisectionPoints.append( len(myList) )
+
+    for iii in range(0,len(bisectionPoints)-1):
+        returnList.append( myList[bisectionPoints[iii]:bisectionPoints[iii+1]] )
+    
+
+    return returnList
 
 class Fuelgrain:
     image = None #1 is nitrous, 0 is fuel, and the edges are all colored .5
@@ -152,16 +170,55 @@ class Fuelgrain:
                                    # scales from 0 on the y-axis. you could also say
                                    # it represents thrust at oxidizer depletion.
 
-    def regressMT(self,regression,numThreads):
-        pass # gotta code this in later
-        #apparently you can break a list like this: nestedlist = [mylist[start:start + 20] for start in range(0, len(mylist), 20)]
+    '''def regressMT(self,regression,numThreads):
+        if int(math.log(numThreads,2)) != math.log(numThreads,2): #ie, if math.log(numThreads,2) is not a whole number
+            print("please make numThreads a power of two, cannot compute")
+            return "error"
+        else:
+            multiPointsLists = splitList(self.pointsList,numThreads)
+            for iteration in range(0,regression):
+                activeThreads = []
+                for pList in multiPointsLists:
+                    print(iteration,len(pList))
+                    activeThreads.append(threading.Thread(
+                #start len(multiPointsLists) threads, and wait for them to finish''' #I'll finish this func later
+    
+    def regressMT(self,regression,plist=None):
+        if plist == None:
+            plist = self.pointsList # if no list of reg points was passed in 
+        self.thrustCurve.append(0) # starts at 0 thrust
+        for iteration in range(0,regression):
+            print(iteration)
+            self.thrustCurve.append(self.countSurfaceArea())
+            self.animationImageList.append(np.copy(self.image))
+
+            myThreads = [] #gets filled up with 1 thread for each circle to be draw this iteration
+            for myTuple in plist: # len(plist) is on the order of hundreds, at least, so that's a lot.
+                myThreads.append(threading.Thread(target=self.drawCircleOnGrain, args=[myTuple,iteration]))
+
+                myThreads[-1].start()
+
+            for thread in myThreads:
+                thread.join()
+                    
+        self.thrustCurve.append(0)
+
+    
+
+
+                
                                    
 
 def main():
     # i feel like i should rewrite this whole rendering code to be OO (under class Fuelgrain), but this works as-is and is clean
     global fuelgrain
     fuelgrain = Fuelgrain("cylindrical.png")
-    fuelgrain.regress(30)
+
+
+    #return
+
+    #fuelgrain.regress(30)
+    fuelgrain.regressMT(30)
 
     fig=plt.figure()
     imgplot=plt.imshow(fuelgrain.image)
