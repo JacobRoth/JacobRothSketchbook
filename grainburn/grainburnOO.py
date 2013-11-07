@@ -1,13 +1,14 @@
 #/usr/bin/env python
 #this is the cleaner version implementing a Fuelgrain class
 print("hello world")
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.image as mpimg
 import numpy as np
 import math
 import sys
-import threading
+import threading, multiprocessing # multiprocessing is for counting cpu cores
 
 
 def convertDown(image): # do not use on grayscale image
@@ -233,13 +234,13 @@ class Fuelgrain:
 def main():
     # i feel like i should rewrite this whole rendering code to be OO (under class Fuelgrain), but this works as-is and is clean
     global fuelgrain
-    fuelgrain = Fuelgrain("cylindrical.png")
+    fuelgrain = Fuelgrain(sys.argv[1])
 
 
     #return
 
     #fuelgrain.regress(30)
-    fuelgrain.regressMT(30,4)
+    fuelgrain.regressMT(int(sys.argv[2]),multiprocessing.cpu_count())
 
     fig=plt.figure()
     imgplot=plt.imshow(fuelgrain.image)
