@@ -8,7 +8,7 @@ import numpy as np
 import math
 import sys
 import threading
-#import _thread as thread #python2-style threading, less "correct" but more usable
+
 
 def convertDown(image): # do not use on grayscale image
     rows,columns,_ = image.shape
@@ -156,6 +156,11 @@ class Fuelgrain:
                     if self.isPointValid((row,column)):
                         self.image[row][column] = 1 # make it nitrous
 
+    def drawCirclesOnGrain(self,pointTuplesList,radius): # accepts a list of points to draw, all the same radius
+        for myTuple in pointTuplesList:
+            self.drawCircleOnGrain(myTuple,radius)
+            #this function might be a great opt target later, but i'm busy
+
     def regress(self,regression,plist=None):
         if plist == None:
             plist = self.pointsList # if no list of reg points was passed in 
@@ -170,20 +175,36 @@ class Fuelgrain:
                                    # scales from 0 on the y-axis. you could also say
                                    # it represents thrust at oxidizer depletion.
 
-    '''def regressMT(self,regression,numThreads):
+    def regressMT(self,regression,numThreads):
         if int(math.log(numThreads,2)) != math.log(numThreads,2): #ie, if math.log(numThreads,2) is not a whole number
             print("please make numThreads a power of two, cannot compute")
             return "error"
         else:
+            self.thrustCurve.append(0)
             multiPointsLists = splitList(self.pointsList,numThreads)
             for iteration in range(0,regression):
+                countThread = threading.Thread(target=self.thrustCurve.append, args=[self.countSurfaceArea()] )
+                countThread.start()
+
+                imageThread = threading.Thread(target=self.animationImageList.append, args = [np.copy(self.image)])
+                imageThread.start()
+
+                countThread.join()
+                imageThread.join()
+                
                 activeThreads = []
                 for pList in multiPointsLists:
                     print(iteration,len(pList))
-                    activeThreads.append(threading.Thread(
-                #start len(multiPointsLists) threads, and wait for them to finish''' #I'll finish this func later
+                    activeThreads.append(threading.Thread(target=self.drawCirclesOnGrain, args=[pList, iteration]))
+                    activeThreads[-1].start() # start the one just appened
+                for myThread in activeThreads:
+                    myThread.join()
+            self.thrustCurve.append(0)
+
+                
+                    
     
-    def regressMT(self,regression,plist=None):
+    def regressPolythreaded(self,regression,plist=None): # one thread per circle, not efficient. has to join them all up each iteration, choking the progrram flow
         if plist == None:
             plist = self.pointsList # if no list of reg points was passed in 
         self.thrustCurve.append(0) # starts at 0 thrust
@@ -218,7 +239,7 @@ def main():
     #return
 
     #fuelgrain.regress(30)
-    fuelgrain.regressMT(30)
+    fuelgrain.regressMT(30,4)
 
     fig=plt.figure()
     imgplot=plt.imshow(fuelgrain.image)
