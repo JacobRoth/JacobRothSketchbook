@@ -8,10 +8,14 @@ class Circle:
         self.y = y
         self.radius = r
 
+    def expand(self,amount):
+        self.radius += amount
+
     def isInsideMe(self,x,y):
         return (x-self.x)**2+(y-self.y)**2 < self.radius**2
     
     def freePerim(self,otherCircles,phenolicRadius=9e99):
+        warningFlag = False
         freeRadians= 0
         angle = 0
         while(angle <= 2*math.pi):
@@ -20,6 +24,7 @@ class Circle:
             y = math.sin(angle)*self.radius
             isPointFree = True
             if (x**2)+(y**2) > phenolicRadius**2:
+                warningFlag = True
                 isPointFree = False #is point outside the phenolic? if so it doesnt count towards perimeter
             else: # only run the check for collisions with other circles if its inside phenolic
                 for circle in otherCircles:
@@ -36,20 +41,33 @@ class Circle:
                             
             if(isPointFree):
                 freeRadians += radiansAtATime
-        return freeRadians*self.radius
+        return freeRadians*self.radius,warningFlag
             
                     
 
 class CircleFigure:
     circles = []
     phenolicRadius = 0
+    warningFlag = False # gets flipped to True if there's burn surface outside the phen
+
+    
     def __init__(self,myList=[],pR=.12):
         self.circles = myList
         self.phenolicRadius = pR
+        self.warningFlag = False 
+    def addNew(self,x,y,r):
+        self.circles.append(Circle(x,y,r))
+    def expandAll(self,amount):
+        for iii in self.circles:
+            iii.expand(amount)
+        
     def perimeter(self):
         returnMe = 0
         for circle in self.circles:
-            returnMe += circle.freePerim(self.circles,self.phenolicRadius)
+            perim,warn = circle.freePerim(self.circles,self.phenolicRadius)
+            if warn:
+                self.warningFlag = True
+            returnMe += perim
         return returnMe
 
     def isInsideMe(self,x,y): 
@@ -84,7 +102,7 @@ class CircleFigure:
     
     
 def main():
-    foo = CircleFigure([Circle(0,0,.05),Circle(0,0,.08)],.12)
+    foo = CircleFigure([Circle(.05,0,.05),Circle(0,0,.05)],.12)
     print(foo.monteCarloArea(100000))
 
 if __name__ == "__main__":
