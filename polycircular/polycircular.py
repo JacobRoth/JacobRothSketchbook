@@ -78,48 +78,60 @@ class CircleFigure:
                     pointsInGapRegion += 1 #it's in the border
         gapProportion = pointsInGapRegion/points # proportion of points in gap region
         gapArea = gapProportion*squareArea
-        return gapArea,
+        return gapArea
         
 
-    def monteCarloPA(self,points=1000000,gapWidth=.005): #is going to return perimeter,area
-        squareArea = (2*self.phenolicRadius)**2
-        
-        pointsInFigure = 0 #this will include the gap region - innacurate but not too much
-        pointsInGapRegion = 0
-        largerFigure = self.expandReturn(gapWidth)
-        for iii in range(points):
-            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-            if largerFigure.isInsideMe(x,y):
-                pointsInFigure += 1
-                if self.isInsideMe(x,y):
-                    pass # it's fully inside, do nothing
-                else:
-                    pointsInGapRegion += 1 #it's in the border
-        gapProportion = pointsInGapRegion/points # proportion of points in gap region
-        gapArea = gapProportion*squareArea
-        perimeter = gapArea/gapWidth
-        return perimeter,squareArea*(pointsInFigure/points) #that second one is area
+##    def monteCarloPA(self,points=1000000,gapWidth=.005): #is going to return perimeter,area
+##        squareArea = (2*self.phenolicRadius)**2
+##        
+##        pointsInFigure = 0 #this will include the gap region - innacurate but not too much
+##        pointsInGapRegion = 0
+##        largerFigure = self.expandReturn(gapWidth)
+##        for iii in range(points):
+##            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+##            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+##            if largerFigure.isInsideMe(x,y):
+##                pointsInFigure += 1
+##                if self.isInsideMe(x,y):
+##                    pass # it's fully inside, do nothing
+##                else:
+##                    pointsInGapRegion += 1 #it's in the border
+##        gapProportion = pointsInGapRegion/points # proportion of points in gap region
+##        gapArea = gapProportion*squareArea
+##        perimeter = gapArea/gapWidth
+##        return perimeter,squareArea*(pointsInFigure/points) #that second one is area
         
 
 
-def Fuelgrain(CircleFigure):
-    pass
+class Fuelgrain(CircleFigure):
+    def __init__(self,myList=[],pR=.12,a=0.104,n=.352,MDotOx=4.382,MDotFuel=.6712,fuelDensity=930):
+        CircleFigure.__init__(self,myList,pR)
+        self.a = a
+        self.n = n
+        self.mDotOx=MDotOx
+        self.mDotFuel=MDotFuel
+        self.fuelDensity=fuelDensity
+    def rDot(self):
+        return self.a * .001 * ((self.mDotOx / self.monteCarloArea() )**self.n)
+    def currentRequiredLength(self,dT=.1):
+        return  self.mDotFuel / ( self.fuelDensity * ( self.monteCarloGapArea(self.rDot()*dT)/dT )  ) 
+    
     
     
 def main():
-    grain = CircleFigure()
-    grain.addNew(0,0,.06)
-    grain.addNew(0.0849,0.0849,.03)
-    grain.addNew(-0.06,-0.07,.02)
-    '''grain.addNew(0,0,.0254)
+    global grain
+    grain = Fuelgrain()
+##    grain.addNew(0,0,.06)
+##    grain.addNew(0.0849,0.0849,.03)
+##    grain.addNew(-0.06,-0.07,.02)
+    grain.addNew(0,0,.0254)
     grain.addNew(.0254,.0254,.0254)
-    grain.addNew(.0254,-.0254,.0254)
+    grain.addNew(.0254,-.0254,.0254) #marielle's grain
     grain.addNew(-.0254,.0254,.0254)
-    grain.addNew(-.0254,-.0254,.0254)'''
+    grain.addNew(-.0254,-.0254,.0254)
 
     
-    print(grain.monteCarloPA(points=10000000,gapWidth=.0005))
+    print(grain.currentRequiredLength())
 
 if __name__ == "__main__":
     main()
