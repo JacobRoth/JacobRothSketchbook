@@ -51,7 +51,7 @@ class CircleFigure:
                 break
         return returnMe
 
-    def monteCarloArea(self,points=2000):
+    def monteCarloArea(self,points=10000):
         insidePoints = 0
         squareArea = (2*self.phenolicRadius)**2 # area is squareArea * (insidepoints/points)
         for iii in range(points):
@@ -61,10 +61,12 @@ class CircleFigure:
                 insidePoints += 1
         return squareArea*(insidePoints/points)
 
-    def monteCarloPA(self,points=1000000,gapregion=.01): #is going to return perimeter,area
+    def monteCarloPA(self,points=1000000,gapWidth=.005): #is going to return perimeter,area
+        squareArea = (2*self.phenolicRadius)**2
+        
         pointsInFigure = 0 #this will include the gap region - innacurate but not too much
         pointsInGapRegion = 0
-        largerFigure = self.expandReturn()
+        largerFigure = self.expandReturn(gapWidth)
         for iii in range(points):
             x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
             y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
@@ -73,17 +75,29 @@ class CircleFigure:
                 if self.isInsideMe(x,y):
                     pass # it's fully inside, do nothing
                 else:
-                    pointsInGapRegion += 1
+                    pointsInGapRegion += 1 #it's in the border
+        gapProportion = pointsInGapRegion/points # proportion of points in gap region
+        gapArea = gapProportion*squareArea
+        perimeter = gapArea/gapWidth
+        return perimeter,squareArea*(pointsInFigure/points) #that second one is area
+        
         
     
     
     
 def main():
-    foo = CircleFigure()
-    foo.addNew(0,0,.06)
-    foo.addNew(0.0849,0.0849,.03)
-    foo.addNew(-0.06,-0.07,.02)
-    print(foo.monteCarloArea(1000000))
+    grain = CircleFigure()
+    grain.addNew(0,0,.06)
+    grain.addNew(0.0849,0.0849,.03)
+    grain.addNew(-0.06,-0.07,.02)
+    '''grain.addNew(0,0,.0254)
+    grain.addNew(.0254,.0254,.0254)
+    grain.addNew(.0254,-.0254,.0254)
+    grain.addNew(-.0254,.0254,.0254)
+    grain.addNew(-.0254,-.0254,.0254)'''
+
+    
+    print(grain.monteCarloPA(points=10000000,gapWidth=.0005))
 
 if __name__ == "__main__":
     main()
