@@ -61,6 +61,26 @@ class CircleFigure:
                 insidePoints += 1
         return squareArea*(insidePoints/points)
 
+    def monteCarloGapArea(self,points=1000000,gapWidth=.005):
+        squareArea = (2*self.phenolicRadius)**2
+        
+        pointsInFigure = 0 #this will include the gap region - innacurate but not too much
+        pointsInGapRegion = 0
+        largerFigure = self.expandReturn(gapWidth)
+        for iii in range(points):
+            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+            if largerFigure.isInsideMe(x,y):
+                pointsInFigure += 1
+                if self.isInsideMe(x,y):
+                    pass # it's fully inside, do nothing
+                else:
+                    pointsInGapRegion += 1 #it's in the border
+        gapProportion = pointsInGapRegion/points # proportion of points in gap region
+        gapArea = gapProportion*squareArea
+        return gapArea,
+        
+
     def monteCarloPA(self,points=1000000,gapWidth=.005): #is going to return perimeter,area
         squareArea = (2*self.phenolicRadius)**2
         
@@ -81,8 +101,10 @@ class CircleFigure:
         perimeter = gapArea/gapWidth
         return perimeter,squareArea*(pointsInFigure/points) #that second one is area
         
-        
-    
+
+
+def Fuelgrain(CircleFigure):
+    pass
     
     
 def main():
