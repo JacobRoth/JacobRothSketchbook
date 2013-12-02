@@ -12,16 +12,24 @@ class Circle:
         self.radius += amount
 
     def isInsideMe(self,x,y):
-        return (x-self.x)**2+(y-self.y)**2 < self.radius**2
+        margin =  (self.radius**2) - ( ((x-self.x)**2) + ((y-self.y)**2) )
+
+    def circum(self):
+        return 2*self.radius*math.pi
+
+    def edgePoint(self,angle):
+        x = self.x + math.cos(angle)*self.radius
+        y = self.y + math.sin(angle)*self.radius
+        return x,y
     
-    def freePerim(self,otherCircles,phenolicRadius=9e99):
+    def freePerim(self,otherCircles,phenolicRadius=9e99): # this function is broken
         warningFlag = False
         freeRadians= 0
         angle = 0
         while(angle <= 2*math.pi):
-            angle = angle+radiansAtATime
-            x = math.cos(angle)*self.radius
-            y = math.sin(angle)*self.radius
+            angle += radiansAtATime
+            x = self.x + math.cos(angle)*self.radius
+            y = self.y + math.sin(angle)*self.radius
             isPointFree = True
             if (x**2)+(y**2) > phenolicRadius**2:
                 warningFlag = True
@@ -31,17 +39,13 @@ class Circle:
                     if circle==self:
                         pass # do not check self 
                     else:
-                        '''distSquared = (x-circle.x)**2+(y-circle.y)**2
-                        if (distSquared < (circle.radius)**2):
-                            isPointFree = False
-                            break'''
                         if circle.isInsideMe(x,y):
                             isPointFree = False
                             break
                             
             if(isPointFree):
                 freeRadians += radiansAtATime
-        return freeRadians*self.radius,warningFlag
+        return freeRadians*self.radius #,warningFlag
             
                     
 
@@ -57,17 +61,18 @@ class CircleFigure:
         self.warningFlag = False 
     def addNew(self,x,y,r):
         self.circles.append(Circle(x,y,r))
-    def expandAll(self,amount):
+    def expand(self,amount):
         for iii in self.circles:
             iii.expand(amount)
+
+    def wipe(self):
+        self.circles = []
         
-    def perimeter(self):
+    def perimeter(self): #broken due to reliance on Circle.freePerim
         returnMe = 0
         for circle in self.circles:
-            perim,warn = circle.freePerim(self.circles,self.phenolicRadius)
-            if warn:
-                self.warningFlag = True
-            returnMe += perim
+            returnMe += circle.freePerim(self.circles,self.phenolicRadius)
+        
         return returnMe
 
     def isInsideMe(self,x,y): 
@@ -80,7 +85,19 @@ class CircleFigure:
                 break
         return returnMe
 
-    def monteCarloArea(self,points=1000):
+    def monteCarloPerimeter(self,points=10000):
+        validPoints = 0
+        for iii in range(points):
+            c = random.choice(self.circles)
+            x,y = c.edgePoint(random.uniform(0,math.pi*2))
+            if self.isInsideMe(x,y):
+                pass # not a valid point
+            else:
+                validPoints += 1
+        proportion = validPoints/points
+        return proportion # for now
+
+    def monteCarloArea(self,points=2000):
         insidePoints = 0
         squareArea = (2*self.phenolicRadius)**2 # area is squareArea * (insidepoints/points)
         for iii in range(points):
