@@ -21,10 +21,11 @@ class CircleFigure:
     circles = []
     phenolicRadius = 0
     
-    def __init__(self,myList=[],pR=.12):
+    def __init__(self,myList=[],pR=.12,monteCarloPoints=1e7):
         self.circles = myList
         self.phenolicRadius = pR
-        self.warningFlag = False 
+        self.warningFlag = False
+        self.monteCarloGenerate(monteCarloPoints)
     def addNew(self,x,y,r):
         self.circles.append(Circle(x,y,r))
 
@@ -51,37 +52,47 @@ class CircleFigure:
                 break
         return returnMe
 
-    def monteCarloArea(self,points=5000000):
+    def monteCarloGenerate(self,points):
+        self.phenolicBoundingSquareArea = (2*self.phenolicRadius)**2 #used in area function
+        self.monteCarlo = []
+        for iii in range(int(points)):
+            self.monteCarlo.append((random.uniform(-1*self.phenolicRadius,self.phenolicRadius),random.uniform(-1*self.phenolicRadius,self.phenolicRadius)))
+
+    def area(self):
         insidePoints = 0
-        squareArea = (2*self.phenolicRadius)**2 # area is squareArea * (insidepoints/points)
-        for iii in range(points):
-            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+        for x,y in self.monteCarlo:
             if self.isInsideMe(x,y):
                 insidePoints += 1
-        return squareArea*(insidePoints/points)
+        return self.phenolicBoundingSquareArea * (insidePoints/len(self.monteCarlo))
 
-    def monteCarloGapArea(self,points=5000000,gapWidth=.005):
-        squareArea = (2*self.phenolicRadius)**2
-        
-        pointsInFigure = 0 #this will include the gap region - innacurate but not too much
-        pointsInGapRegion = 0
+    def gapArea(self,gapWidth=.005):
         largerFigure = self.expandReturn(gapWidth)
-        for iii in range(points):
-            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+        pointsInGapRegion = 0
+        for x,y in self.monteCarlo:
             if largerFigure.isInsideMe(x,y):
-                pointsInFigure += 1
+                #good, we're inside
                 if self.isInsideMe(x,y):
-                    pass # it's fully inside, do nothing
+                    #nevermind, it's all the way inside
+                    pass
                 else:
-                    pointsInGapRegion += 1 #it's in the border
-        gapProportion = pointsInGapRegion/points # proportion of points in gap region
-        gapArea = gapProportion*squareArea
-        return gapArea
+                    pointsInGapRegion += 1
+        return self.phenolicBoundingSquareArea * (pointsInGapRegion/len(self.monteCarlo))
+            
         
 
-##    def monteCarloPA(self,points=1000000,gapWidth=.005): #is going to return perimeter,area
+
+##
+##    def monteCarloArea(self,points=5000000):
+##        insidePoints = 0
+##        squareArea = (2*self.phenolicRadius)**2 # area is squareArea * (insidepoints/points)
+##        for iii in range(points):
+##            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+##            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
+##            if self.isInsideMe(x,y):
+##                insidePoints += 1
+##        return squareArea*(insidePoints/points)
+##
+##    def monteCarloGapArea(self,points=5000000,gapWidth=.005):
 ##        squareArea = (2*self.phenolicRadius)**2
 ##        
 ##        pointsInFigure = 0 #this will include the gap region - innacurate but not too much
@@ -98,40 +109,38 @@ class CircleFigure:
 ##                    pointsInGapRegion += 1 #it's in the border
 ##        gapProportion = pointsInGapRegion/points # proportion of points in gap region
 ##        gapArea = gapProportion*squareArea
-##        perimeter = gapArea/gapWidth
-##        return perimeter,squareArea*(pointsInFigure/points) #that second one is area
+##        return gapArea
+        
+
         
 
 
 class Fuelgrain(CircleFigure):
-    def __init__(self,myList=[],pR=.12,a=0.104,n=.352,MDotOx=4.382,MDotFuel=.6712,fuelDensity=930):
-        CircleFigure.__init__(self,myList,pR)
+    def __init__(self,myList=[],pR=.12,monteCarloPoints=1e7,a=0.104,n=.352,MDotOx=4.382,MDotFuel=.6712,fuelDensity=930):
+        CircleFigure.__init__(self,myList=myList,pR=pR,monteCarloPoints=monteCarloPoints)
         self.a = a
         self.n = n
         self.mDotOx=MDotOx
         self.mDotFuel=MDotFuel
         self.fuelDensity=fuelDensity
-    def rDot(self):
-        return self.a * .001 * ((self.mDotOx / self.monteCarloArea() )**self.n)
+    def rDot(self):   # a bunch of calls to monteCarlo functions, please replace
+        return self.a * .001 * ((self.mDotOx / self.area() )**self.n)
     def currentRequiredLength(self,dT=.1):
-        return  self.mDotFuel / ( self.fuelDensity * ( self.monteCarloGapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
+        return  self.mDotFuel / ( self.fuelDensity * ( self.gapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
     
     
     
 def main():
-    global grain
-    grain = Fuelgrain(a=.1146,n=.503,MDotOx=4.4318,MDotFuel=.68182,fuelDensity=739.24)
-##    grain.addNew(0,0,.06)
-##    grain.addNew(0.0849,0.0849,.03)
-##    grain.addNew(-0.06,-0.07,.02)
-    grain.addNew(0,0,.0254)
-    grain.addNew(.0254,.0254,.0254)
-    grain.addNew(.0254,-.0254,.0254) #marielle's grain
-    grain.addNew(-.0254,.0254,.0254)
-    grain.addNew(-.0254,-.0254,.0254)
+    global marielleGrain
+    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=4.4318,MDotFuel=.68182,fuelDensity=739.24)
+    marielleGrain.addNew(0,0,.0254)
+    marielleGrain.addNew(.0254,.0254,.0254)
+    marielleGrain.addNew(.0254,-.0254,.0254) 
+    marielleGrain.addNew(-.0254,.0254,.0254)
+    marielleGrain.addNew(-.0254,-.0254,.0254)
 
     
-    print(grain.currentRequiredLength())
+    print(marielleGrain.currentRequiredLength())
 
 if __name__ == "__main__":
     main()
