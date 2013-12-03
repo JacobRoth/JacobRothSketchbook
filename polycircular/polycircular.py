@@ -1,4 +1,4 @@
-import math,random,copy
+import math,random,copy,threading,multiprocessing
 
 class Circle:
     def __init__(self,x,y,r):
@@ -25,7 +25,7 @@ class CircleFigure:
         self.circles = myList
         self.phenolicRadius = pR
         self.warningFlag = False
-        self.monteCarloGenerate(monteCarloPoints)
+        self.monteCarloGenerateMT(monteCarloPoints)
     def addNew(self,x,y,r):
         self.circles.append(Circle(x,y,r))
 
@@ -58,12 +58,30 @@ class CircleFigure:
         for iii in range(int(points)):
             self.monteCarlo.append((random.uniform(-1*self.phenolicRadius,self.phenolicRadius),random.uniform(-1*self.phenolicRadius,self.phenolicRadius)))
 
+    def monteCarloGenerateMT(self,points,threads=0):
+        if threads == 0:
+            threads = multiprocessing.cpu_count()
+        myThreads = []
+        for iii in range(threads):
+            myThreads.append(threading.Thread(target=self.monteCarloGenerate, args=[points/threads]))
+            myThreads[-1].start()
+
+        for myThread in myThreads:
+            myThread.join()
+            
+            
+
+
     def area(self):
         insidePoints = 0
         for x,y in self.monteCarlo:
             if self.isInsideMe(x,y):
                 insidePoints += 1
         return self.phenolicBoundingSquareArea * (insidePoints/len(self.monteCarlo))
+
+##    def areaMT(self): # fsck this, I'll finish it later.
+##        insidePoints = 0
+##        def 
 
     def gapArea(self,gapWidth=.005):
         largerFigure = self.expandReturn(gapWidth)
@@ -76,43 +94,7 @@ class CircleFigure:
                     pass
                 else:
                     pointsInGapRegion += 1
-        return self.phenolicBoundingSquareArea * (pointsInGapRegion/len(self.monteCarlo))
-            
-        
-
-
-##
-##    def monteCarloArea(self,points=5000000):
-##        insidePoints = 0
-##        squareArea = (2*self.phenolicRadius)**2 # area is squareArea * (insidepoints/points)
-##        for iii in range(points):
-##            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-##            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-##            if self.isInsideMe(x,y):
-##                insidePoints += 1
-##        return squareArea*(insidePoints/points)
-##
-##    def monteCarloGapArea(self,points=5000000,gapWidth=.005):
-##        squareArea = (2*self.phenolicRadius)**2
-##        
-##        pointsInFigure = 0 #this will include the gap region - innacurate but not too much
-##        pointsInGapRegion = 0
-##        largerFigure = self.expandReturn(gapWidth)
-##        for iii in range(points):
-##            x = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-##            y = random.uniform(-1*self.phenolicRadius,self.phenolicRadius)
-##            if largerFigure.isInsideMe(x,y):
-##                pointsInFigure += 1
-##                if self.isInsideMe(x,y):
-##                    pass # it's fully inside, do nothing
-##                else:
-##                    pointsInGapRegion += 1 #it's in the border
-##        gapProportion = pointsInGapRegion/points # proportion of points in gap region
-##        gapArea = gapProportion*squareArea
-##        return gapArea
-        
-
-        
+        return self.phenolicBoundingSquareArea * (pointsInGapRegion/len(self.monteCarlo))     
 
 
 class Fuelgrain(CircleFigure):
@@ -121,12 +103,16 @@ class Fuelgrain(CircleFigure):
         self.a = a
         self.n = n
         self.mDotOx=MDotOx
-        self.mDotFuel=MDotFuel
+        self.mDotFuelDesired=MDotFuel
         self.fuelDensity=fuelDensity
     def rDot(self):   # a bunch of calls to monteCarlo functions, please replace
         return self.a * .001 * ((self.mDotOx / self.area() )**self.n)
     def currentRequiredLength(self,dT=.1):
-        return  self.mDotFuel / ( self.fuelDensity * ( self.gapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
+        return  self.mDotFuelDesired / ( self.fuelDensity * ( self.gapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
+    def simulatedBurn(self,seconds=20,dT=1,length=0):
+        if length=0:
+            length=self.currentRequiredLength()
+        
     
     
     
