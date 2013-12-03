@@ -51,7 +51,7 @@ class CircleFigure:
                 break
         return returnMe
 
-    def monteCarloArea(self,points=10000):
+    def monteCarloArea(self,points=5000000):
         insidePoints = 0
         squareArea = (2*self.phenolicRadius)**2 # area is squareArea * (insidepoints/points)
         for iii in range(points):
@@ -61,7 +61,7 @@ class CircleFigure:
                 insidePoints += 1
         return squareArea*(insidePoints/points)
 
-    def monteCarloGapArea(self,points=1000000,gapWidth=.005):
+    def monteCarloGapArea(self,points=5000000,gapWidth=.005):
         squareArea = (2*self.phenolicRadius)**2
         
         pointsInFigure = 0 #this will include the gap region - innacurate but not too much
@@ -114,13 +114,13 @@ class Fuelgrain(CircleFigure):
     def rDot(self):
         return self.a * .001 * ((self.mDotOx / self.monteCarloArea() )**self.n)
     def currentRequiredLength(self,dT=.1):
-        return  self.mDotFuel / ( self.fuelDensity * ( self.monteCarloGapArea(self.rDot()*dT)/dT )  ) 
+        return  self.mDotFuel / ( self.fuelDensity * ( self.monteCarloGapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
     
     
     
 def main():
     global grain
-    grain = Fuelgrain()
+    grain = Fuelgrain(a=.1146,n=.503,MDotOx=4.4318,MDotFuel=.68182,fuelDensity=739.24)
 ##    grain.addNew(0,0,.06)
 ##    grain.addNew(0.0849,0.0849,.03)
 ##    grain.addNew(-0.06,-0.07,.02)
