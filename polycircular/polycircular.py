@@ -110,9 +110,20 @@ class Fuelgrain(CircleFigure):
     def currentRequiredLength(self,dT=.1):
         return  self.mDotFuelDesired / ( self.fuelDensity * ( self.gapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
     def simulatedBurn(self,seconds=20,dT=1,length=0):
-        if length=0:
+        print("I'm Jacob's fuel grain burn simulator program.")
+        print("I'm computing Marielle's grain right now. Please don't close me")
+        print(" ")
+        if length==0:
             length=self.currentRequiredLength()
-        
+        time = 0
+        while time<seconds:
+            time += dT
+            topViewArea = self.gapArea(gapWidth=(self.rDot()*dT))
+            fuelVolume = topViewArea*length
+
+            fuelMass = fuelVolume*self.fuelDensity
+
+            print("At T="+str(time)+" the fuel mass flux is "+ str(fuelMass/dT) + " kg/sec")
     
     
     
