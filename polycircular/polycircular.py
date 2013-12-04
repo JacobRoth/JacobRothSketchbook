@@ -105,8 +105,10 @@ class Fuelgrain(CircleFigure):
         self.mDotOx=MDotOx
         self.mDotFuelDesired=MDotFuel
         self.fuelDensity=fuelDensity
-    def rDot(self):   # a bunch of calls to monteCarlo functions, please replace
-        return self.a * .001 * ((self.mDotOx / self.area() )**self.n)
+    def rDot(self,area=0): #if you've already calculated the area elsewhere
+        if area == 0:
+            area = self.area()
+        return self.a * .001 * ((self.mDotOx / area )**self.n)
     def currentRequiredLength(self,dT=.1):
         return  self.mDotFuelDesired / ( self.fuelDensity * ( self.gapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
     def simulatedBurn(self,seconds=20,dT=1,length=0):
@@ -118,13 +120,28 @@ class Fuelgrain(CircleFigure):
         time = 0
         while time<seconds:
             time += dT
-            topViewArea = self.gapArea(gapWidth=(self.rDot()*dT))
+            rDot = self.rDot()
+            topViewArea = self.gapArea(gapWidth=(rDot*dT))
             fuelVolume = topViewArea*length
 
             fuelMass = fuelVolume*self.fuelDensity
 
             print("At T="+str(time)+" the fuel mass flux is "+ str(fuelMass/dT) + " kg/sec")
-    
+            self.expand(rDot*dT)
+    def zonesOfRegression(self,zoneWidth=.005,numFigures=25):
+        figures = []
+        tableOfAreas = []
+        figures.append(self)
+        for iii in range(numFigures-1):
+            figures.append(figures[-1].expandReturn(zoneWidth))
+            print("Debug output: computed figure "+str(iii))
+            tableOfAreas.append(figures[-1].area())
+##        return figures # for now
+        tableOfZoneAreas = [] # will have length of len(figures)-1
+        for iii in range(len(tableOfAreas)-1):
+            ##todo - finish function
+            
+        
     
     
 def main():
@@ -136,8 +153,10 @@ def main():
     marielleGrain.addNew(-.0254,.0254,.0254)
     marielleGrain.addNew(-.0254,-.0254,.0254)
 
+    global ZoR
+    print("ZoR computing start")
+    ZoR = marielleGrain.zonesOfRegression(numFigures=4)
     
-    print(marielleGrain.currentRequiredLength())
 
 if __name__ == "__main__":
     main()
