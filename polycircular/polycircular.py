@@ -135,36 +135,37 @@ class Fuelgrain(CircleFigure):
             tableOfAreas.append(figures[-1].area()) ### todo - do the multi-areas thing. make another MC array.
         tableOfZoneAreas = [] # will have length of len(figures)-1
         for iii in range(len(tableOfAreas)-1):
-            ##todo - finish function
             tableOfZoneAreas.append(tableOfAreas[iii+1]-tableOfAreas[iii])
-        return tableOfZoneAreas
+        return tableOfZoneAreas 
         
     
     
 def main():
-##    print("computing Marielle's fuel grain (again, with new flow rates)")
-##    print("please don't close me")
-
-
-
-##    global marielleGrain
-##    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=3.8181,MDotFuel=0.582,fuelDensity=739.24)
-##    marielleGrain.addNew(0,0,.0254)
-##    marielleGrain.addNew(.0254,.0254,.0254)
-##    marielleGrain.addNew(.0254,-.0254,.0254) 
-##    marielleGrain.addNew(-.0254,.0254,.0254)
-##    marielleGrain.addNew(-.0254,-.0254,.0254)
-##
+##    print("This is Jacob Roth's Fuel Grain Analyzer")
+##    print("I'm running a burn simulation right now, please dont close me")
+    
+    global marielleGrain
+    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=3.8181,MDotFuel=0.582,fuelDensity=739.24)
+    marielleGrain.addNew(0,0,.0254)
+    marielleGrain.addNew(.0254,.0254,.0254)
+    marielleGrain.addNew(.0254,-.0254,.0254) 
+    marielleGrain.addNew(-.0254,.0254,.0254)
+    marielleGrain.addNew(-.0254,-.0254,.0254)
+##    print(marielleGrain.currentRequiredLength()
 ##    global ZoR
 ##    ZoR = marielleGrain.zonesOfRegression(numFigures=4)
 
-    global newGrain
-    newGrain = Fuelgrain()
-    newGrain.addNew(0,0,.0254)
-    newGrain.addNew(0,.0254,.0254)
-    newGrain.addNew(0.0127,-0.022,.0254)
-    newGrain.addNew(-0.0127,-0.022,.0254)
+    global jacobGrain
+    jacobGrain = Fuelgrain() #our constants
+    jacobGrain.addNew(0,0,.03)
+    jacobGrain.addNew(0,.06,.03)
+    jacobGrain.addNew(0,-.06,.03)
+    jacobGrain.addNew(.06,0,.03)
+    jacobGrain.addNew(-.06,0,0.03)
     
+    
+
+
 
 if __name__ == "__main__":
     main()
