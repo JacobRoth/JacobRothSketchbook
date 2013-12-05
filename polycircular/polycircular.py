@@ -112,9 +112,6 @@ class Fuelgrain(CircleFigure):
     def currentRequiredLength(self,dT=.1):
         return  self.mDotFuelDesired / ( self.fuelDensity * ( self.gapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
     def simulatedBurn(self,seconds=20,dT=1,length=0):
-##        print("I'm Jacob's fuel grain burn simulator program.")
-##        print("I'm computing Marielle's grain right now. Please don't close me")
-##        print(" ")
         if length==0:
             length=self.currentRequiredLength()
         time = 0
@@ -126,9 +123,8 @@ class Fuelgrain(CircleFigure):
 
             fuelMass = fuelVolume*self.fuelDensity
 
-            print("At T="+str(time)+" the fuel mass flux is "+ str(fuelMass/dT) + " kg/sec")
+            print("At T="+str(time)+" the fuel mass flow is "+ str(fuelMass/dT) + " kg/sec")
             self.expand(rDot*dT)
-<<<<<<< HEAD
     def zonesOfRegression(self,zoneWidth=.005,numFigures=25):
         figures = []
         tableOfAreas = []
@@ -137,52 +133,37 @@ class Fuelgrain(CircleFigure):
             figures.append(figures[-1].expandReturn(zoneWidth))
             print("Debug output: computed figure "+str(iii))
             tableOfAreas.append(figures[-1].area())
-##        return figures # for now
         tableOfZoneAreas = [] # will have length of len(figures)-1
         for iii in range(len(tableOfAreas)-1):
             ##todo - finish function
-            
+            pass
         
     
     
 def main():
+    print("computing Marielle's fuel grain (again, with new flow rates)")
+    print("please don't close me")
     global marielleGrain
-    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=4.4318,MDotFuel=.68182,fuelDensity=739.24)
+    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=3.8181,MDotFuel=0.582,fuelDensity=739.24)
     marielleGrain.addNew(0,0,.0254)
     marielleGrain.addNew(.0254,.0254,.0254)
     marielleGrain.addNew(.0254,-.0254,.0254) 
     marielleGrain.addNew(-.0254,.0254,.0254)
     marielleGrain.addNew(-.0254,-.0254,.0254)
 
-    global ZoR
-    print("ZoR computing start")
-    ZoR = marielleGrain.zonesOfRegression(numFigures=4)
-    
-=======
-    
-    
-    
-def main():
-##    global marielleGrain
-##    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=4.4318,MDotFuel=.68182,fuelDensity=739.24)
-##    marielleGrain.addNew(0,0,.0254)
-##    marielleGrain.addNew(.0254,.0254,.0254)
-##    marielleGrain.addNew(.0254,-.0254,.0254) 
-##    marielleGrain.addNew(-.0254,.0254,.0254)
-##    marielleGrain.addNew(-.0254,-.0254,.0254)
+    print(marielleGrain.simulatedBurn(seconds=23))
 
-    global jacobGrain
-
-    jacobGrain = Fuelgrain()
-    jacobGrain.addNew(0,  0,.05)
-
-    jacobGrain.addNew(0,.08,.03)
-    jacobGrain.addNew(0,-.08,.03)
-    jacobGrain.addNew(.08,0,.03)
-    jacobGrain.addNew(-.08,0,.03)
-    
-    print(jacobGrain.simulatedBurn())
->>>>>>> 1a81ba6e61c726289dbfa5845f84501eef6f4192
+##    global jacobGrain
+##
+##    jacobGrain = Fuelgrain()
+##    jacobGrain.addNew(0,  0,.05)
+##
+##    jacobGrain.addNew(0,.08,.03)
+##    jacobGrain.addNew(0,-.08,.03)
+##    jacobGrain.addNew(.08,0,.03)
+##    jacobGrain.addNew(-.08,0,.03)
+##    
+##    print(jacobGrain.simulatedBurn())
 
 if __name__ == "__main__":
     main()
