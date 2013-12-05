@@ -132,38 +132,39 @@ class Fuelgrain(CircleFigure):
         for iii in range(numFigures-1):
             figures.append(figures[-1].expandReturn(zoneWidth))
             print("Debug output: computed figure "+str(iii))
-            tableOfAreas.append(figures[-1].area())
+            tableOfAreas.append(figures[-1].area()) ### todo - do the multi-areas thing. make another MC array.
         tableOfZoneAreas = [] # will have length of len(figures)-1
         for iii in range(len(tableOfAreas)-1):
             ##todo - finish function
-            pass
+            tableOfZoneAreas.append(tableOfAreas[iii+1]-tableOfAreas[iii])
+        return tableOfZoneAreas
         
     
     
 def main():
-    print("computing Marielle's fuel grain (again, with new flow rates)")
-    print("please don't close me")
-    global marielleGrain
-    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=3.8181,MDotFuel=0.582,fuelDensity=739.24)
-    marielleGrain.addNew(0,0,.0254)
-    marielleGrain.addNew(.0254,.0254,.0254)
-    marielleGrain.addNew(.0254,-.0254,.0254) 
-    marielleGrain.addNew(-.0254,.0254,.0254)
-    marielleGrain.addNew(-.0254,-.0254,.0254)
+##    print("computing Marielle's fuel grain (again, with new flow rates)")
+##    print("please don't close me")
 
-    print(marielleGrain.simulatedBurn(seconds=23))
 
-##    global jacobGrain
+
+##    global marielleGrain
+##    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=3.8181,MDotFuel=0.582,fuelDensity=739.24)
+##    marielleGrain.addNew(0,0,.0254)
+##    marielleGrain.addNew(.0254,.0254,.0254)
+##    marielleGrain.addNew(.0254,-.0254,.0254) 
+##    marielleGrain.addNew(-.0254,.0254,.0254)
+##    marielleGrain.addNew(-.0254,-.0254,.0254)
 ##
-##    jacobGrain = Fuelgrain()
-##    jacobGrain.addNew(0,  0,.05)
-##
-##    jacobGrain.addNew(0,.08,.03)
-##    jacobGrain.addNew(0,-.08,.03)
-##    jacobGrain.addNew(.08,0,.03)
-##    jacobGrain.addNew(-.08,0,.03)
-##    
-##    print(jacobGrain.simulatedBurn())
+##    global ZoR
+##    ZoR = marielleGrain.zonesOfRegression(numFigures=4)
+
+    global newGrain
+    newGrain = Fuelgrain()
+    newGrain.addNew(0,0,.0254)
+    newGrain.addNew(0,.0254,.0254)
+    newGrain.addNew(0.0127,-0.022,.0254)
+    newGrain.addNew(-0.0127,-0.022,.0254)
+    
 
 if __name__ == "__main__":
     main()
