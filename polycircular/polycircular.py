@@ -115,6 +115,7 @@ class Fuelgrain(CircleFigure):
         if length==0:
             length=self.currentRequiredLength()
         time = 0
+        print("Required Length: "+str(length))
         while time<seconds:
             time += dT
             rDot = self.rDot()
@@ -144,24 +145,27 @@ def main():
 ##    print("This is Jacob Roth's Fuel Grain Analyzer")
 ##    print("I'm running a burn simulation right now, please dont close me")
     
-    global marielleGrain
-    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=3.8181,MDotFuel=0.582,fuelDensity=739.24)
-    marielleGrain.addNew(0,0,.0254)
-    marielleGrain.addNew(.0254,.0254,.0254)
-    marielleGrain.addNew(.0254,-.0254,.0254) 
-    marielleGrain.addNew(-.0254,.0254,.0254)
-    marielleGrain.addNew(-.0254,-.0254,.0254)
+##    global marielleGrain
+##    marielleGrain = Fuelgrain(a=.1146,n=.503,MDotOx=3.8181,MDotFuel=0.582,fuelDensity=739.24)
+##    marielleGrain.addNew(0,0,.0254)
+##    marielleGrain.addNew(.0254,.0254,.0254)
+##    marielleGrain.addNew(.0254,-.0254,.0254) 
+##    marielleGrain.addNew(-.0254,.0254,.0254)
+##    marielleGrain.addNew(-.0254,-.0254,.0254)
 ##    print(marielleGrain.currentRequiredLength()
 ##    global ZoR
 ##    ZoR = marielleGrain.zonesOfRegression(numFigures=4)
 
     global jacobGrain
     jacobGrain = Fuelgrain() #our constants
-    jacobGrain.addNew(0,0,.03)
-    jacobGrain.addNew(0,.06,.03)
-    jacobGrain.addNew(0,-.06,.03)
-    jacobGrain.addNew(.06,0,.03)
-    jacobGrain.addNew(-.06,0,0.03)
+    jacobGrain.addNew(0,0,.06)
+##    jacobGrain.addNew(0,.07,.035)
+##    jacobGrain.addNew(0,-.07,.035)
+##    jacobGrain.addNew(.07,0,.035)
+##    jacobGrain.addNew(-.07,0,0.035)
+
+    jacobGrain.simulatedBurn()
+          
     
     
 
