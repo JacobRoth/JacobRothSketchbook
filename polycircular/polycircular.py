@@ -128,7 +128,9 @@ class Fuelgrain(CircleFigure):
 
             print("At T="+str(time)+" the fuel mass flow is "+ str(fuelMass/dT) + " kg/sec")
             self.expand(rDot*dT)
-    def zonesOfRegression(self,zoneWidth=.005,numFigures=25):
+    def zonesOfRegression(self,zoneWidth=.005,length=0,numFigures=25):
+        if length==0:
+            length=self.currentRequiredLength()
         figures = []
         tableOfAreas = []
         figures.append(self)
@@ -140,7 +142,9 @@ class Fuelgrain(CircleFigure):
         for iii in range(len(tableOfAreas)-1):
             tableOfZoneAreas.append(tableOfAreas[iii+1]-tableOfAreas[iii])
         tableOfBurnTimes = [] # will have length of len(tableOfZoneAreas)
-        for iii in tableOfZoneAreas
+        for iii in range(len(tableOfZoneAreas)):
+            zoneMass = tableOfZoneAreas[iii]*length*self.fuelDensity
+            zoneRegressionRate = self.a * .001 * ((self.MDotOx/tableOfAreas[iii])**self.n)
         
     
     
@@ -162,10 +166,14 @@ def main():
     global jacobGrain
     jacobGrain = Fuelgrain() #our constants
     jacobGrain.addNew(0,0,.03)
-    jacobGrain.addNew(0,.07,.035)
-    jacobGrain.addNew(0,-.07,.035)
-    jacobGrain.addNew(.07,0,.035)
-    jacobGrain.addNew(-.07,0,0.035)
+    
+    jacobGrain.addNew(.07,0       ,.03)
+    jacobGrain.addNew(0.035,.06062      ,.03)
+    jacobGrain.addNew(-.035,.06062       ,.03)
+    jacobGrain.addNew(-.07,0      ,0.03)
+    jacobGrain.addNew(-.035,-.06062       ,.03)
+    jacobGrain.addNew(.035,-.06062        ,.03)
+    
 
     jacobGrain.simulatedBurn()
     
