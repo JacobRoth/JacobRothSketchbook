@@ -111,7 +111,9 @@ class Fuelgrain(CircleFigure):
         return self.a * .001 * ((self.mDotOx / area )**self.n)
     def currentRequiredLength(self,dT=.1):
         return  self.mDotFuelDesired / ( self.fuelDensity * ( self.gapArea(gapWidth=(self.rDot()*dT))/dT )  ) 
-    def simulatedBurn(self,seconds=20,dT=1,length=0):
+    def simulatedBurn(self,seconds=20,dT=1,length=0,name=None):
+        print("--------------------------")
+        print("simulating grain with identifier: " +str(name))
         if length==0:
             length=self.currentRequiredLength()
         time = 0
@@ -137,7 +139,8 @@ class Fuelgrain(CircleFigure):
         tableOfZoneAreas = [] # will have length of len(figures)-1
         for iii in range(len(tableOfAreas)-1):
             tableOfZoneAreas.append(tableOfAreas[iii+1]-tableOfAreas[iii])
-        return tableOfZoneAreas 
+        tableOfBurnTimes = [] # will have length of len(tableOfZoneAreas)
+        for iii in tableOfZoneAreas
         
     
     
@@ -158,17 +161,14 @@ def main():
 
     global jacobGrain
     jacobGrain = Fuelgrain() #our constants
-    jacobGrain.addNew(0,0,.06)
-##    jacobGrain.addNew(0,.07,.035)
-##    jacobGrain.addNew(0,-.07,.035)
-##    jacobGrain.addNew(.07,0,.035)
-##    jacobGrain.addNew(-.07,0,0.035)
+    jacobGrain.addNew(0,0,.03)
+    jacobGrain.addNew(0,.07,.035)
+    jacobGrain.addNew(0,-.07,.035)
+    jacobGrain.addNew(.07,0,.035)
+    jacobGrain.addNew(-.07,0,0.035)
 
     jacobGrain.simulatedBurn()
-          
     
-    
-
 
 
 if __name__ == "__main__":
