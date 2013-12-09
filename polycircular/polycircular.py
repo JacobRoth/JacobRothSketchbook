@@ -146,7 +146,7 @@ class Fuelgrain(CircleFigure):
         tableOfMassFlowRates = []
         for iii in range(len(tableOfZoneAreas)):
             zoneMass = tableOfZoneAreas[iii]*length*self.fuelDensity
-            zoneRegressionRate = self.a * .001 * ((self.MDotOx/tableOfAreas[iii])**self.n)
+            zoneRegressionRate = self.a * .001 * ((self.mDotOx/tableOfAreas[iii])**self.n)
             zoneBurnTime = (1/zoneRegressionRate) * zoneWidth
             tableOfMassFlowRates.append(zoneMass/zoneBurnTime)
             print("DebugOutput: fuel mass flow rate "+str(zoneMass/zoneBurnTime))
@@ -170,19 +170,21 @@ def main():
 ##    global ZoR
 ##    ZoR = marielleGrain.zonesOfRegression(numFigures=4)
 
-    global jacobGrain
-    jacobGrain = Fuelgrain() #our constants
-    jacobGrain.addNew(0,0,.03)
-    
-    jacobGrain.addNew(.07,0       ,.03)
-    jacobGrain.addNew(0.035,.06062      ,.03)
-    jacobGrain.addNew(-.035,.06062       ,.03)
-    jacobGrain.addNew(-.07,0      ,0.03)
-    jacobGrain.addNew(-.035,-.06062       ,.03)
-    jacobGrain.addNew(.035,-.06062        ,.03)
-    
+##    global jacobGrain
+##    jacobGrain = Fuelgrain() #our constants
+##    jacobGrain.addNew(0,0,.03)
+##    jacobGrain.addNew(.07,0       ,.03)
+##    jacobGrain.addNew(0.035,.06062      ,.03)
+##    jacobGrain.addNew(-.035,.06062       ,.03)
+##    jacobGrain.addNew(-.07,0      ,0.03)
+##    jacobGrain.addNew(-.035,-.06062       ,.03)
+##    jacobGrain.addNew(.035,-.06062        ,.03)
+
+    global tst1
+    tst1 = Fuelgrain()
+    tst1.addNew(0,0,.03)
     global ZoR
-    ZoR = jacobGrain.zonesOfRegression()
+    ZoR = tst1.zonesOfRegression(numFigures=4)
     
 
 
