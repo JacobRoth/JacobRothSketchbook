@@ -131,6 +131,7 @@ class Fuelgrain(CircleFigure):
     def zonesOfRegression(self,zoneWidth=.005,length=0,numFigures=25):
         if length==0:
             length=self.currentRequiredLength()
+        print("Debug output: grain length " +str(length))
         figures = []
         tableOfAreas = []
         figures.append(self)
@@ -141,10 +142,16 @@ class Fuelgrain(CircleFigure):
         tableOfZoneAreas = [] # will have length of len(figures)-1
         for iii in range(len(tableOfAreas)-1):
             tableOfZoneAreas.append(tableOfAreas[iii+1]-tableOfAreas[iii])
-        tableOfBurnTimes = [] # will have length of len(tableOfZoneAreas)
+        #tableOfBurnTimes = [] # will have length of len(tableOfZoneAreas)
+        tableOfMassFlowRates = []
         for iii in range(len(tableOfZoneAreas)):
             zoneMass = tableOfZoneAreas[iii]*length*self.fuelDensity
             zoneRegressionRate = self.a * .001 * ((self.MDotOx/tableOfAreas[iii])**self.n)
+            zoneBurnTime = (1/zoneRegressionRate) * zoneWidth
+            tableOfMassFlowRates.append(zoneMass/zoneBurnTime)
+            print("DebugOutput: fuel mass flow rate "+str(zoneMass/zoneBurnTime))
+        return tableOfMassFlowRates
+            
         
     
     
@@ -174,8 +181,8 @@ def main():
     jacobGrain.addNew(-.035,-.06062       ,.03)
     jacobGrain.addNew(.035,-.06062        ,.03)
     
-
-    jacobGrain.simulatedBurn()
+    global ZoR
+    ZoR = jacobGrain.zonesOfRegression()
     
 
 
