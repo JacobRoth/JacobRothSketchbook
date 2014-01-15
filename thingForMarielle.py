@@ -1,5 +1,5 @@
 def regressionRate(r):
-    return (.053491035/r)*.001
+    return (.000999733/r)
 
 def testRun(rInitial,dT=.01,burnTime=18.5): #seconds
     radius = rInitial
@@ -11,7 +11,4 @@ def testRun(rInitial,dT=.01,burnTime=18.5): #seconds
         #if ( int(time/.01) == time/.01):
         print(str(radius)+"   "+str(time))
 
-testRun(.005)
-        
-    
-    
+testRun(.03)
