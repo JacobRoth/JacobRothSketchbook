@@ -15,7 +15,7 @@ def simple(a = .198,n = .325,fuelDensity = 930,mDotOxTotal = 3.99,mDotFuelTotal 
     print("Regression rate: " +str(a* .001 * ((mDotOx/area)**n)) + " m/s")
     print("Required Length: " +str(reqLen))
 
-def circle(a = .104,n = .352,fuelDensity = 930,mDotOxTotal = 3.99,mDotFuelTotal = .616):
+def circle(a = .104,n = .352,fuelDensity = 930,mDotOxTotal = 3.99,mDotFuelTotal = .616): #bad consts
     numPorts = eval(input("number of equal ports: "))
     mDotOx = mDotOxTotal/numPorts
     mDotFuel = mDotFuelTotal/numPorts
@@ -33,5 +33,5 @@ def circle(a = .104,n = .352,fuelDensity = 930,mDotOxTotal = 3.99,mDotFuelTotal 
 
 if __name__ == "__main__":
     while(1==1):
-        circle(a=.1146,n=.5036,fuelDensity=915,mDotOxTotal=4.791,mDotFuelTotal=.737) #marielle's constants
-        #simple()
+        #circle(a=.1146,n=.5036,fuelDensity=915,mDotOxTotal=4.791,mDotFuelTotal=.737) #marielle's constants
+        simple()
