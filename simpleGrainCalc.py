@@ -1,6 +1,6 @@
 #simple manual-input grain calculator
 import math
-def simple(a = .198,n = .325,fuelDensity = 930,mDotOxTotal = 3.99,mDotFuelTotal = .616):
+def simple(a = .198,n = .325,fuelDensity = 930,mDotOxTotal = 5.9,mDotFuelTotal = .908):
     numPorts = eval(input("number of equal ports: "))
     mDotOx = mDotOxTotal/numPorts
     mDotFuel = mDotFuelTotal/numPorts
