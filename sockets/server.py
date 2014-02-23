@@ -12,8 +12,10 @@ s.listen(5)
 while True:
     conn, addr = s.accept()
     print('Connected by', addr)
-    while True:
-        data = conn.recv(1024)
-        if not data: break
-        os.system("useradd "+str(data.decode()))
+    data = None
+    while not data:                #wait until we get something
+        data = conn.recv(4096)     #receive ALL the bytes.
+    print(data.decode('UTF-8'))
+    conn.send(b'some response bytes')
+    
     conn.close()
